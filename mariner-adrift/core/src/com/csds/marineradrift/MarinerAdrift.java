@@ -13,12 +13,12 @@ public class MarinerAdrift extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		img = new Texture("pixil-frame-0.png");
 	}
 
 	@Override
 	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
+		ScreenUtils.clear(49f, 120f, 193f, 1f);
 		batch.begin();
 		batch.draw(img, 0, 0);
 		batch.end();

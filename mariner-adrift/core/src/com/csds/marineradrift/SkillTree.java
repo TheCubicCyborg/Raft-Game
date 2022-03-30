@@ -1,4 +1,6 @@
-package com.csds.marineradrift;   
+package com.csds.marineradrift;
+
+import com.google.gson.Gson;
 
 public class SkillTree {
 
@@ -17,15 +19,5 @@ public class SkillTree {
 		if(start == null)
 			start = temp;
 	}
-	
-	public void toJson()
-	{
-		
-	}
-	
-	
-	
-	
-	
 	
 }
