@@ -2,15 +2,13 @@ package com.csds.marineradrift;
 
 public class Item {
 
-	private int textureId, amt, maxAmt;
-	private String name;
+	private int amt;
+	private int itemId;
 	
-	public Item(String n, int t, int a, int m)
+	public Item(int id, int a)
 	{
-		name = n;
-		textureId = t;
+		itemId = id;
 		amt = a;
-		maxAmt = m;
 	}
 	
 	public Item splitStack()
@@ -18,7 +16,7 @@ public class Item {
 		if(amt > 1)
 		{
 			int temp = amt/2;
-			Item ret = new Item(name, textureId, amt - temp, maxAmt);
+			Item ret = new Item(itemId, amt - temp);
 			amt = temp;
 			return ret;
 		}
@@ -30,7 +28,7 @@ public class Item {
 	{
 		if(amt >1)
 		{
-			Item ret = new Item(name, textureId, 1, maxAmt);
+			Item ret = new Item(itemId, 1);
 			amt -= 1;
 			return ret;
 		}
