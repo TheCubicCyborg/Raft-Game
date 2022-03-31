@@ -52,6 +52,7 @@ public class Gameplay {
 	public void dispose()
 	{
 		inventory.dispose();
+		player.dispose();
 	}
 	
 	public void processInputs()

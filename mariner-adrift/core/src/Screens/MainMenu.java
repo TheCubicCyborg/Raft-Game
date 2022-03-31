@@ -22,7 +22,7 @@ public class MainMenu extends MarinerScreen{
 	public void show()
 	{
 		batch = new SpriteBatch();
-		img = new Texture("pixil-frame-0.png");
+		img = new Texture("player.png");
 	}
 	
 	@Override

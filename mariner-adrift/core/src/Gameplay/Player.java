@@ -2,6 +2,8 @@ package Gameplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -44,6 +46,9 @@ public class Player {
 	float stateTime;
 	World world;
 	
+	private SpriteBatch batch;
+	private Texture img;
+	
 	public Player(World world, Inventory inventory, float x, float y)
 	{
 		inWater = false;
@@ -64,6 +69,9 @@ public class Player {
 		
 		state = IDLE;
 		stateTime = 0;
+		
+		batch = new SpriteBatch();
+		img = new Texture("player.png");
 	}
 	
 	public void update(float deltaTime)
@@ -85,7 +93,16 @@ public class Player {
 		tryMove();
 		vel.scl(1/deltaTime);
 		
+		renderPlayer();
+		
 		stateTime += deltaTime;
+	}
+	
+	public void renderPlayer()
+	{
+		batch.begin();
+		batch.draw(img,Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 50, 100);
+		batch.end();
 	}
 	
 	
@@ -150,5 +167,11 @@ public class Player {
 	private void pickUp()
 	{
 		
+	}
+	
+	public void dispose()
+	{
+		batch.dispose();
+		img.dispose();
 	}
 }

@@ -18,8 +18,6 @@ public class Inventory {
 		batch = new SpriteBatch();
 		img = new Texture("inventory-temp.png");
 		
-		System.out.println(Gdx.graphics.getWidth() + "\t" + Gdx.graphics.getHeight());
-		System.out.println(img.getHeight() + "\t" + img.getWidth());
 	}
 	
 	public void Render(float delta)
