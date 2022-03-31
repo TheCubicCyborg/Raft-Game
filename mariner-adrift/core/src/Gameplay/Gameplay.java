@@ -8,10 +8,11 @@ import WorldMap.World;
 
 public class Gameplay {
 	
-	private boolean isPaused;
+	protected static boolean isPaused;
 	private Player player;
 	private World world;
 	private Inventory inventory;
+	private PauseMenu pauseMenu;
 	private boolean inventoryOpen, pauseOpen;
 	
 	public Gameplay()
@@ -19,6 +20,7 @@ public class Gameplay {
 		isPaused = false;
 		world = new World();
 		inventory = new Inventory();
+		pauseMenu = new PauseMenu();
 		inventoryOpen = false;
 		pauseOpen = false;
 		player = new Player(world, inventory, 0, 0);
@@ -37,16 +39,14 @@ public class Gameplay {
 		
 		if(pauseOpen)
 		{
+			pauseMenu.render(delta);
 			isPaused = true;
 		}
 		else if(!inventoryOpen)
 			isPaused = false;
 		
 		
-		if(!isPaused)
-		{
-			player.update(delta);
-		}
+		player.update(delta);
 	}
 	
 	public void dispose()

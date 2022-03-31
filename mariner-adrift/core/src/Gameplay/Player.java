@@ -29,11 +29,13 @@ public class Player {
 	static final int DOWN = -1;
 	static final int LEFT = -1;
 	static final int RIGHT = 1;
+
 	
-	static final float JUMP_VEL = 10f;
-	static float ACC = 20f;
-	static final float MAX_VEL = 6f;
-	static final float DAMP = 0.9f;
+	static float ACC = 400f;
+	static final float WALK_VEL = 120;
+	static final float RUN_VEL = 200;
+	static float MAX_VEL = 120f;
+	static final float DAMP = 0;
 	
 	Vector2 pos = new Vector2();
 	Vector2 acc = new Vector2();
@@ -76,32 +78,35 @@ public class Player {
 	
 	public void update(float deltaTime)
 	{
-		processInput();
-		
-		acc.scl(deltaTime);
-		
-		vel.add(acc.x, acc.y);
-		if(acc.x == 0) vel.x *= DAMP;
-		if(acc.y == 0) vel.y *= DAMP;
-		
-		if(vel.x > MAX_VEL) vel.x = MAX_VEL;
-		if(vel.x < -MAX_VEL) vel.x = -MAX_VEL;
-		if(vel.y > MAX_VEL) vel.y = MAX_VEL;
-		if(vel.y < -MAX_VEL) vel.y = -MAX_VEL;
-		
-		vel.scl(deltaTime);
-		tryMove();
-		vel.scl(1/deltaTime);
+		if(!Gameplay.isPaused)
+		{
+			processInput();
+			
+			//acc.scl(deltaTime);
+			
+			//vel.add(acc.x, acc.y);
+			//if(acc.x == 0) vel.x *= DAMP;
+			//if(acc.y == 0) vel.y *= DAMP;
+			
+			if(vel.x > MAX_VEL) vel.x = MAX_VEL;
+			if(vel.x < -MAX_VEL) vel.x = -MAX_VEL;
+			if(vel.y > MAX_VEL) vel.y = MAX_VEL;
+			if(vel.y < -MAX_VEL) vel.y = -MAX_VEL;
+			
+			vel.scl(deltaTime);
+			tryMove();
+			vel.scl(1/deltaTime);
+			
+			stateTime += deltaTime;
+		}
 		
 		renderPlayer();
-		
-		stateTime += deltaTime;
 	}
 	
 	public void renderPlayer()
 	{
 		batch.begin();
-		batch.draw(img,Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, 50, 100);
+		batch.draw(img,pos.x, pos.y, 50, 100);
 		batch.end();
 	}
 	
@@ -113,55 +118,76 @@ public class Player {
 			
 		if(Gdx.input.isKeyPressed(Keys.CONTROL_LEFT))
 		{
-			ACC = 30f;
+			MAX_VEL = RUN_VEL;
 		}
 		else
 		{
-			ACC = 20f;
+			MAX_VEL = WALK_VEL;
 		}
 		
 		int wTimer = 0, sTimer = 0, dTimer = 0, aTimer = 0;
 		
-		if(Gdx.input.isKeyPressed(Keys.W) && wTimer <= sTimer)
+		if(Gdx.input.isKeyPressed(Keys.W) && (sTimer == 0 || wTimer <= sTimer))
 		{
 			dir.y = UP;
-			acc.y = ACC * dir.y;
+			//acc.y = ACC * dir.y;
+			vel.y = MAX_VEL * dir.y;
 			wTimer++;
 		}
 		else
+		{
 			wTimer = 0;
+			if(!Gdx.input.isKeyPressed(Keys.S))
+				vel.y = 0;
+		}
+			
 		
-		if(Gdx.input.isKeyPressed(Keys.S) && sTimer <= wTimer)
+		if(Gdx.input.isKeyPressed(Keys.S) && (wTimer == 0 || sTimer <= wTimer))
 		{
 			dir.y = DOWN;
-			acc.y = ACC * dir.y;
+			//acc.y = ACC * dir.y;
+			vel.y = MAX_VEL * dir.y;
 			sTimer++;
 		}
 		else
+		{
 			sTimer = 0;
+			if(!Gdx.input.isKeyPressed(Keys.W))
+				vel.y = 0;
+		}
 		
-		if(Gdx.input.isKeyPressed(Keys.D) && dTimer <= aTimer)
+		if(Gdx.input.isKeyPressed(Keys.D) && (aTimer == 0 || dTimer <= aTimer))
 		{
 			dir.x = RIGHT;
-			acc.x = ACC * dir.y;
+			//acc.x = ACC * dir.x;
+			vel.x = MAX_VEL * dir.x;
 			dTimer++;
 		}
 		else
+		{
 			dTimer = 0;
+			if(!Gdx.input.isKeyPressed(Keys.A))
+				vel.x = 0;
+		}
 		
-		if(Gdx.input.isKeyPressed(Keys.A) && aTimer <= dTimer)
+		if(Gdx.input.isKeyPressed(Keys.A) && (dTimer == 0 || aTimer <= dTimer))
 		{
 			dir.x = LEFT;
-			acc.x = ACC * dir.x;
+			//acc.x = ACC * dir.x;
+			vel.x = MAX_VEL*dir.x;
 			aTimer++;
 		}
 		else
+		{
 			aTimer = 0;
+			if(!Gdx.input.isKeyPressed(Keys.D))
+				vel.x = 0;
+		}
 	}
 	
 	private void tryMove()
 	{
-		
+		pos.add(vel);
 	}
 	
 	private void pickUp()
