@@ -1,4 +1,4 @@
-package com.csds.marineradrift;
+package Inventory;
 import com.badlogic.gdx.graphics.Texture;
 
 public class ItemProperties {

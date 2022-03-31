@@ -5,14 +5,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import Gameplay.Gameplay;
+
+
 public class GameScreen extends MarinerScreen{
 
 	SpriteBatch batch;
 	Texture img;
+	Gameplay gp;
 	
 	public GameScreen(Game game)
 	{
 		super(game);
+		gp = new Gameplay();
 	}
 	
 	@Override
@@ -25,15 +30,14 @@ public class GameScreen extends MarinerScreen{
 	@Override
 	public void render(float delta) {
 		ScreenUtils.clear(49f, 120f, 193f, 0.5f);
-		batch.begin();
-		batch.draw(img, 0, 0, 540, 540);
-		batch.end();
+		gp.update(delta);
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
 		img.dispose();
+		gp.dispose();
 	}
 	
 }

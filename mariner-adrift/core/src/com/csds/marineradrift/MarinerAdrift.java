@@ -1,6 +1,8 @@
 package com.csds.marineradrift;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -14,6 +16,5 @@ public class MarinerAdrift extends Game {
 	@Override
 	public void create () {
 		setScreen(new MainMenu(this));
-		
 	}
 }
