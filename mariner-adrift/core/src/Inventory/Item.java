@@ -11,6 +11,21 @@ public class Item {
 		amt = a;
 	}
 	
+	public int getTextureX()
+	{
+		return (itemId%12);
+	}
+	
+	public int getTextureY()
+	{
+		return ((int)(itemId/12));
+	}
+	
+	public int getAmt()
+	{
+		return amt;
+	}
+	
 	public Item splitStack()
 	{
 		if(amt > 1)

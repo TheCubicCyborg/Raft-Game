@@ -1,6 +1,8 @@
 package Screens;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -10,6 +12,7 @@ import Gameplay.Gameplay;
 
 public class GameScreen extends MarinerScreen{
 
+	public static float scalar = 6;
 	SpriteBatch batch;
 	Texture img;
 	Gameplay gp;
@@ -31,6 +34,7 @@ public class GameScreen extends MarinerScreen{
 	public void render(float delta) {
 		ScreenUtils.clear(49f, 120f, 193f, 0.5f);
 		gp.update(delta);
+		
 	}
 	
 	@Override

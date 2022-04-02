@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 
 import Inventory.Inventory;
+import Inventory.Item;
 import WorldMap.World;
 
 public class Gameplay {
@@ -15,6 +16,8 @@ public class Gameplay {
 	private PauseMenu pauseMenu;
 	private boolean inventoryOpen, pauseOpen;
 	
+	
+	
 	public Gameplay()
 	{
 		isPaused = false;
@@ -24,6 +27,7 @@ public class Gameplay {
 		inventoryOpen = false;
 		pauseOpen = false;
 		player = new Player(world, inventory, 0, 0);
+
 	}
 	
 	public void update(float delta)
@@ -47,6 +51,12 @@ public class Gameplay {
 		
 		
 		player.update(delta);
+		
+		if(Gdx.input.isKeyJustPressed(Keys.P))
+		{
+			Item[][] temp = inventory.getInventory();
+			temp[3][3] = new Item(0, 999);
+		}
 	}
 	
 	public void dispose()
@@ -75,6 +85,7 @@ public class Gameplay {
 		{
 			Gdx.app.exit();
 		}
+		
 	}
 	
 }
