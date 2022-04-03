@@ -70,6 +70,7 @@ public class Inventory {
 	{
 		batch.dispose();
 		img.dispose();
+		select.dispose();
 	}
 	
 	private void processCursor(float delta)

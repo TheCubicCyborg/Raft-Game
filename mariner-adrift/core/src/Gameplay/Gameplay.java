@@ -33,6 +33,8 @@ public class Gameplay {
 	public void update(float delta)
 	{
 		processInputs();
+		player.update(delta);
+		
 		if(inventoryOpen)
 		{
 			inventory.Render(delta);
@@ -50,7 +52,7 @@ public class Gameplay {
 			isPaused = false;
 		
 		
-		player.update(delta);
+		
 	}
 	
 	public void dispose()
