@@ -51,12 +51,6 @@ public class Gameplay {
 		
 		
 		player.update(delta);
-		
-		if(Gdx.input.isKeyJustPressed(Keys.P))
-		{
-			Item[][] temp = inventory.getInventory();
-			temp[3][3] = new Item(0, 999);
-		}
 	}
 	
 	public void dispose()

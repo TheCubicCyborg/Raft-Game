@@ -4,11 +4,13 @@ public class Item {
 
 	private int amt;
 	private int itemId;
+	private boolean selected;
 	
 	public Item(int id, int a)
 	{
 		itemId = id;
 		amt = a;
+		selected = false;
 	}
 	
 	public int getTextureX()
@@ -26,22 +28,41 @@ public class Item {
 		return amt;
 	}
 	
-	public Item splitStack()
+	public int getId()
 	{
-		if(amt > 1)
-		{
-			int temp = amt/2;
-			Item ret = new Item(itemId, amt - temp);
-			amt = temp;
-			return ret;
-		}
-		else
-			return this;
+		return itemId;
 	}
+	
+	public boolean isSelected()
+	{
+		return selected;
+	}
+	
+	public void setSelected(boolean b)
+	{
+		selected = b;
+	}
+	
+	public void combineItems(Item i)
+	{
+		i.amt += this.amt;
+	}
+	
+	public void putOne(Item i)
+	{
+		i.amt += 1;
+		this.amt -= 1;
+	}
+	
+	public Item pickUp()
+	{
+		return this;
+	}
+	
 	
 	public Item takeOne()
 	{
-		if(amt >1)
+		if(amt >0)
 		{
 			Item ret = new Item(itemId, 1);
 			amt -= 1;
