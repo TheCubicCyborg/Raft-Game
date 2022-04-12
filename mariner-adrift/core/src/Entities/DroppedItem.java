@@ -3,11 +3,14 @@ package Entities;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import Inventory.Item;
+
 public class DroppedItem implements Entity{
 
 	Vector2 pos;
 	Vector2 dim;
 	Rectangle hitbox;
+	Item item;
 	
 	public DroppedItem(float x, float y, int w, int h)
 	{
@@ -32,6 +35,11 @@ public class DroppedItem implements Entity{
 	public void render(float delta)
 	{
 		
+	}
+	
+	public Item getItem()
+	{
+		return item;
 	}
 	
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import Inventory.Inventory;
+import WorldMap.Chunk;
 import WorldMap.World;
 
 public class Player {
@@ -21,6 +22,8 @@ public class Player {
 	static final int DYING = 5;
 	static final int PICKUP = 6;
 	static final int DEAD = 7;
+	
+	
 	
 	private boolean inWater; 
 	
@@ -46,13 +49,17 @@ public class Player {
 	
 	int state;
 	float stateTime;
+	
 	World world;
+	Vector2 currentChunk;
 	
 	private SpriteBatch batch;
 	private Texture img;
 	
-	public Player(World world, Inventory inventory, float x, float y)
+	public Player(World world, Inventory inventory, float x, float y, SpriteBatch batch)
 	{
+		this.batch = batch;
+		
 		inWater = false;
 		
 		this.world = world;
@@ -71,13 +78,15 @@ public class Player {
 		
 		state = IDLE;
 		stateTime = 0;
-		
-		batch = new SpriteBatch();
+
 		img = new Texture("player.png");
+		
+		currentChunk = world.getFocused().getCoords();
 	}
 	
 	public void update(float deltaTime)
 	{
+		
 		if(!Gameplay.isPaused)
 		{
 			processInput();
@@ -98,6 +107,8 @@ public class Player {
 			vel.scl(1/deltaTime);
 			
 			stateTime += deltaTime;
+			
+			System.out.println(currentChunk.x + "," + currentChunk.y);
 		}
 		
 		renderPlayer();
@@ -187,7 +198,11 @@ public class Player {
 	
 	private void tryMove()
 	{
+		if(vel.x != 0 || vel.y != 0)
+		{
 		pos.add(vel);
+		chunkMovementCheck();
+		}
 	}
 	
 	private void pickUp()
@@ -197,7 +212,43 @@ public class Player {
 	
 	public void dispose()
 	{
-		batch.dispose();
 		img.dispose();
+	}
+	
+	public Vector2 getPos()
+	{
+		return pos;
+	}
+	
+	public void chunkMovementCheck()
+	{		
+		
+		if(pos.x >= (currentChunk.x +1) * Chunk.totalSize)
+		{
+			world.setFocused(world.getFocused().east());
+			world.refreshRendered(World.EAST);
+			currentChunk.x += 1;
+		}
+		else if(pos.x < (currentChunk.x) * Chunk.totalSize)
+		{
+			world.setFocused(world.getFocused().west());
+			world.refreshRendered(World.WEST);
+			currentChunk.x -= 1;
+		}
+		
+		if(pos.y >= (currentChunk.y +1) * Chunk.totalSize)
+		{
+			world.setFocused(world.getFocused().north());
+			world.refreshRendered(World.NORTH);
+			currentChunk.y += 1;
+		}
+		else if(pos.x < (currentChunk.x) * Chunk.totalSize);
+		{
+			world.setFocused(world.getFocused().south());
+			world.refreshRendered(World.SOUTH);
+			currentChunk.y -= 1;
+		}
+		
+		
 	}
 }

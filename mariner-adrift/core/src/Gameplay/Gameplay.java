@@ -2,6 +2,12 @@ package Gameplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 import Inventory.Inventory;
 import Inventory.Item;
@@ -9,31 +15,46 @@ import WorldMap.World;
 
 public class Gameplay {
 	
-	protected static boolean isPaused;
-	private Player player;
+	public static boolean isPaused;
+	public static Player player;
 	private World world;
 	private Inventory inventory;
 	private PauseMenu pauseMenu;
-	private boolean inventoryOpen, pauseOpen;
+	public static boolean pauseOpen;
+	private boolean inventoryOpen;
 	
+	SpriteBatch batch;
+	public static OrthographicCamera camera;
 	
+	Sprite sprite;
 	
 	public Gameplay()
 	{
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+		batch = new SpriteBatch();
+		
 		isPaused = false;
 		world = new World();
-		inventory = new Inventory();
+		world.initiateWorld();
+		inventory = new Inventory(batch);
 		pauseMenu = new PauseMenu();
 		inventoryOpen = false;
 		pauseOpen = false;
-		player = new Player(world, inventory, 0, 0);
+		player = new Player(world, inventory, 0, 0, batch);
 
+		sprite = new Sprite(new Texture("badlogic.jpg"));
 	}
 	
 	public void update(float delta)
 	{
+		batch.setProjectionMatrix(camera.combined);
+		
 		processInputs();
 		player.update(delta);
+		
+		Vector2 temp = player.getPos();
+		camera.position.set(temp.x,temp.y,0);
+		camera.update();
 		
 		if(inventoryOpen)
 		{
@@ -51,7 +72,9 @@ public class Gameplay {
 		else if(!inventoryOpen)
 			isPaused = false;
 		
-		
+		batch.begin();
+		sprite.draw(batch);
+		batch.end();
 		
 	}
 	
@@ -83,5 +106,14 @@ public class Gameplay {
 		}
 		
 	}
+	
+	
+	public static Vector2 worldToScreenPos(Vector2 v)
+	{
+		
+		
+		return v;
+	}
+	
 	
 }

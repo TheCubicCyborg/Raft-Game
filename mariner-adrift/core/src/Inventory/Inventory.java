@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
+import Gameplay.Gameplay;
+
 import com.badlogic.gdx.Input.Buttons;
 
 import Screens.GameScreen;
@@ -18,6 +21,7 @@ public class Inventory {
 	private Item[][] inventory;
 	private Vector2 screenPos;
 	private Vector2 dim;
+	private Vector2 mousePos;
 	private SpriteBatch batch;
 	private Texture img;
 	TextureRegion[][] textures, digits;
@@ -28,18 +32,19 @@ public class Inventory {
 	private boolean didTake;
 	
 	
-	public Inventory()
+	public Inventory(SpriteBatch batch)
 	{
 		//first 3 rows are main inventory, row 4 is hotbar, row 5 is miscelaneous slots ie. Armor, equippables
 		inventory = new Item[5][9];
-		batch = new SpriteBatch();
+		this.batch = batch;
 		img = new Texture("inventory-temp2.png");
 		textures = new TextureRegion(new Texture("ItemMap.png")).split(20, 20);
 		digits = new TextureRegion(new Texture("digits.png")).split(5, 7);
 		dim = new Vector2(img.getWidth() * GameScreen.scalar, img.getHeight() *GameScreen.scalar);
-		screenPos = new Vector2(Gdx.graphics.getWidth()/2 - dim.x/2, Gdx.graphics.getHeight()/2 - dim.y/2);
+		screenPos = new Vector2(Gameplay.camera.position.x - dim.x/2, Gameplay.camera.position.y - dim.y/2);
 		timeClicked = 0;
 		didTake = false;
+		mousePos = new Vector2();
 		
 		Pixmap pm = new Pixmap((int)(20*GameScreen.scalar), (int)(20*GameScreen.scalar), Format.RGBA8888 );
 		pm.setColor(0,0,0,.1f);
@@ -50,14 +55,21 @@ public class Inventory {
 	
 	public void Render(float delta)
 	{
+		screenPos.x = Gameplay.camera.position.x - dim.x/2;
+		screenPos.y = Gameplay.camera.position.y - dim.y/2;
 		
+		mousePos.x = Gameplay.camera.position.x - (Gdx.graphics.getWidth()/2) + Gdx.input.getX();
+		mousePos.y = Gameplay.camera.position.y + (Gdx.graphics.getHeight()/2) - Gdx.input.getY();
 		
 		batch.begin();
 		batch.draw(img, screenPos.x, screenPos.y, dim.x, dim.y);
 		batch.end();
 		renderItems();
+		if(!Gameplay.pauseOpen)
+		{
 		processCursor(delta);
 		renderSelected();
+		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.P))
 		{
@@ -68,7 +80,6 @@ public class Inventory {
 	
 	public void dispose()
 	{
-		batch.dispose();
 		img.dispose();
 		select.dispose();
 	}
@@ -86,8 +97,8 @@ public class Inventory {
 			{
 				tempCoords = getCoords(r+1,c+1);
 				
-				tempRect.set(tempCoords.x, Gdx.graphics.getHeight() - (tempCoords.y + 20*GameScreen.scalar), 20*GameScreen.scalar, 20*GameScreen.scalar);
-				if(tempRect.contains(Gdx.input.getX(), Gdx.input.getY()))
+				tempRect.set(tempCoords.x, tempCoords.y, 20*GameScreen.scalar, 20*GameScreen.scalar);
+				if(tempRect.contains(mousePos.x, mousePos.y))
 				{
 					batch.draw(select, tempCoords.x, tempCoords.y, 20*GameScreen.scalar, 20*GameScreen.scalar);
 					if(inventory[r][c] != null)
@@ -181,12 +192,12 @@ public class Inventory {
 		{
 			batch.begin();
 			TextureRegion temp = textures[selected.getTextureY()][selected.getTextureX()];
-			batch.draw(temp, Gdx.input.getX() - (temp.getRegionWidth()/2 * GameScreen.scalar), Gdx.graphics.getHeight() - (Gdx.input.getY() + 20*GameScreen.scalar) + (temp.getRegionHeight()/2 * GameScreen.scalar),20 * GameScreen.scalar, 20 * GameScreen.scalar);
+			batch.draw(temp, mousePos.x - (temp.getRegionWidth()/2  * GameScreen.scalar), mousePos.y - (temp.getRegionHeight()/2 * GameScreen.scalar), 20 * GameScreen.scalar, 20 * GameScreen.scalar);
 			int num = selected.getAmt();
 			if(num > 1)
 			{
-				int x = Gdx.input.getX() + (int)(8  * GameScreen.scalar);
-				int y = Gdx.graphics.getHeight() - (Gdx.input.getY() + (int)(9 * GameScreen.scalar));
+				int x = (int)(mousePos.x + 8 * GameScreen.scalar);
+				int y = (int)(mousePos.y - 9 * GameScreen.scalar);
 				while(num > 0)
 				{
 					int front = num % 10;

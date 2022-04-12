@@ -2,7 +2,7 @@ package Screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -17,6 +17,7 @@ public class GameScreen extends MarinerScreen{
 	Texture img;
 	Gameplay gp;
 	
+	
 	public GameScreen(Game game)
 	{
 		super(game);
@@ -26,8 +27,7 @@ public class GameScreen extends MarinerScreen{
 	@Override
 	public void show()
 	{
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+
 	}
 	
 	@Override

@@ -1,7 +1,7 @@
 package Entities;
 
 
-interface Entity {
+public interface Entity {
 	
 	public void update(float delta);
 	
