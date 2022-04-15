@@ -1,6 +1,7 @@
 package Gameplay;
 
 import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -8,11 +9,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import Entities.Entity;
 import Inventory.Inventory;
 import WorldMap.Chunk;
 import WorldMap.World;
 
-public class Player {
+
+public class Player implements Entity {
 
 	Vector2 position, speed, acceleration;
 	//STATES
@@ -252,6 +255,9 @@ public class Player {
 		}
 		
 
+		
+	}
+	public void update() {
 		
 	}
 }
