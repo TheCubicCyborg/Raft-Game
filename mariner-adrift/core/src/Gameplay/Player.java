@@ -231,30 +231,26 @@ public class Player implements Entity {
 		if(pos.x >= (currentChunk.x +1) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().east());
-			world.updateRendered(World.EAST);
-//			world.renderNew(World.EAST);
+			world.refreshRendered(World.EAST);
 			currentChunk.x += 1;
 		}
 		else if(pos.x < (currentChunk.x) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().west());
-//			world.renderNew(World.WEST);
-			world.updateRendered(World.WEST);
+			world.refreshRendered(World.WEST);
 			currentChunk.x -= 1;
 		}
 		
 		if(pos.y >= (currentChunk.y +1) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().north());
-//			world.renderNew(World.NORTH);
-			world.updateRendered(World.NORTH);
+			world.refreshRendered(World.NORTH);
 			currentChunk.y += 1;
 		}
 		else if(pos.y < (currentChunk.y) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().south());
-//			world.renderNew(World.SOUTH);
-			world.updateRendered(World.SOUTH);
+			world.refreshRendered(World.SOUTH);
 			currentChunk.y -= 1;
 		}
 		
