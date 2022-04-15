@@ -3,6 +3,7 @@ package Gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -54,7 +55,7 @@ public class Player {
 	Vector2 currentChunk;
 	
 	private SpriteBatch batch;
-	private Texture img;
+	private Sprite player;
 	
 	public Player(World world, Inventory inventory, float x, float y, SpriteBatch batch)
 	{
@@ -79,7 +80,7 @@ public class Player {
 		state = IDLE;
 		stateTime = 0;
 
-		img = new Texture("player.png");
+		player = new Sprite(new Texture("player.png"));
 		
 		currentChunk = world.getFocused().getCoords();
 	}
@@ -108,7 +109,8 @@ public class Player {
 			
 			stateTime += deltaTime;
 			
-			System.out.println(currentChunk.x + "," + currentChunk.y);
+//			System.out.println(currentChunk.x + "," + currentChunk.y);
+//			System.out.println(pos.x + "," + pos.y);
 		}
 		
 		renderPlayer();
@@ -117,7 +119,7 @@ public class Player {
 	public void renderPlayer()
 	{
 		batch.begin();
-		batch.draw(img,pos.x, pos.y, 50, 100);
+		batch.draw(player,pos.x, pos.y, 16, 32);
 		batch.end();
 	}
 	
@@ -212,7 +214,7 @@ public class Player {
 	
 	public void dispose()
 	{
-		img.dispose();
+		player.getTexture().dispose();
 	}
 	
 	public Vector2 getPos()
@@ -242,13 +244,14 @@ public class Player {
 			world.refreshRendered(World.NORTH);
 			currentChunk.y += 1;
 		}
-		else if(pos.x < (currentChunk.x) * Chunk.totalSize);
+		else if(pos.y < (currentChunk.y) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().south());
 			world.refreshRendered(World.SOUTH);
 			currentChunk.y -= 1;
 		}
 		
+
 		
 	}
 }

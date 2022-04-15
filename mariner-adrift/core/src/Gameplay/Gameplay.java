@@ -31,10 +31,11 @@ public class Gameplay {
 	public Gameplay()
 	{
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+		camera.zoom = (float)(1.0/6.0);
 		batch = new SpriteBatch();
 		
 		isPaused = false;
-		world = new World();
+		world = new World(batch);
 		world.initiateWorld();
 		inventory = new Inventory(batch);
 		pauseMenu = new PauseMenu();
@@ -49,12 +50,16 @@ public class Gameplay {
 	{
 		batch.setProjectionMatrix(camera.combined);
 		
+		world.update(delta);
+		
 		processInputs();
 		player.update(delta);
 		
 		Vector2 temp = player.getPos();
 		camera.position.set(temp.x,temp.y,0);
 		camera.update();
+		
+		
 		
 		if(inventoryOpen)
 		{
@@ -72,9 +77,9 @@ public class Gameplay {
 		else if(!inventoryOpen)
 			isPaused = false;
 		
-		batch.begin();
-		sprite.draw(batch);
-		batch.end();
+//		batch.begin();
+//		sprite.draw(batch);
+//		batch.end();
 		
 	}
 	

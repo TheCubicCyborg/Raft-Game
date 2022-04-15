@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -23,7 +24,7 @@ public class Inventory {
 	private Vector2 dim;
 	private Vector2 mousePos;
 	private SpriteBatch batch;
-	private Texture img;
+	private Sprite inv;
 	TextureRegion[][] textures, digits;
 	private Item selected;
 	private Texture select;
@@ -37,10 +38,10 @@ public class Inventory {
 		//first 3 rows are main inventory, row 4 is hotbar, row 5 is miscelaneous slots ie. Armor, equippables
 		inventory = new Item[5][9];
 		this.batch = batch;
-		img = new Texture("inventory-temp2.png");
+		inv = new Sprite(new Texture("inventory-temp2.png"));
 		textures = new TextureRegion(new Texture("ItemMap.png")).split(20, 20);
 		digits = new TextureRegion(new Texture("digits.png")).split(5, 7);
-		dim = new Vector2(img.getWidth() * GameScreen.scalar, img.getHeight() *GameScreen.scalar);
+		dim = new Vector2(inv.getWidth() * GameScreen.scalar, inv.getHeight() *GameScreen.scalar);
 		screenPos = new Vector2(Gameplay.camera.position.x - dim.x/2, Gameplay.camera.position.y - dim.y/2);
 		timeClicked = 0;
 		didTake = false;
@@ -62,7 +63,7 @@ public class Inventory {
 		mousePos.y = Gameplay.camera.position.y + (Gdx.graphics.getHeight()/2) - Gdx.input.getY();
 		
 		batch.begin();
-		batch.draw(img, screenPos.x, screenPos.y, dim.x, dim.y);
+		batch.draw(inv, screenPos.x, screenPos.y, dim.x, dim.y);
 		batch.end();
 		renderItems();
 		if(!Gameplay.pauseOpen)
@@ -80,7 +81,7 @@ public class Inventory {
 	
 	public void dispose()
 	{
-		img.dispose();
+		inv.getTexture().dispose();
 		select.dispose();
 	}
 	

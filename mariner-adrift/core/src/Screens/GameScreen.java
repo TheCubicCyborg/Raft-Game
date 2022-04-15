@@ -12,7 +12,7 @@ import Gameplay.Gameplay;
 
 public class GameScreen extends MarinerScreen{
 
-	public static float scalar = 6;
+	public static float scalar = 1;
 	SpriteBatch batch;
 	Texture img;
 	Gameplay gp;

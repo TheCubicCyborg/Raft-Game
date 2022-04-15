@@ -2,6 +2,9 @@ package WorldMap;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import Entities.Entity;
 
@@ -17,8 +20,10 @@ public class Chunk {
 	private Tile[][] chunk;
 	private Chunk north, east, south, west;
 	private ArrayList<Entity> entities;
+	private SpriteBatch batch;
+	private Sprite back;
 	
-	public Chunk(int x, int z, Chunk n, Chunk e, Chunk s, Chunk w) {
+	public Chunk(int x, int z, Chunk n, Chunk e, Chunk s, Chunk w, SpriteBatch b) {
 		
 		coords = new Vector2(x, z);
 		chunk = new Tile[chunkSize][chunkSize];
@@ -30,8 +35,16 @@ public class Chunk {
 		south = s;
 		west = w;
 		
+		batch = b;
+		back = new Sprite(new Texture("Chunk.png"));
 	}
 	
+	public void render(float delta)
+	{
+		batch.begin();
+		batch.draw(back,coords.x * totalSize+1, coords.y * totalSize+1, 254,254);
+		batch.end(); 
+	}
 	
 	public void setTile(int ID, int x, int z) 
 	{
@@ -75,6 +88,11 @@ public class Chunk {
 	public Vector2 getCoords()
 	{
 		return coords;
+	}
+	
+	public void dispose()
+	{
+		back.getTexture().dispose();
 	}
 
 }
