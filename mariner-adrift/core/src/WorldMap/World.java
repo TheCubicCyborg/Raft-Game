@@ -2,6 +2,7 @@ package WorldMap;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.csds.marineradrift.Entry;
 import com.csds.marineradrift.Map;
 
 public class World {
@@ -31,9 +32,9 @@ public class World {
 	
 	public void update(float delta)
 	{
-		for(Chunk c : rendered)
+		for(Entry<Vector2,Chunk> e : rendered)
 		{
-			c.render(delta);
+			e.getElement().render(delta);
 		}
 	}
 	
@@ -132,7 +133,7 @@ public class World {
 		}
 	}
 	
-	public void refreshRendered(int dir)
+	public void renderNew(int dir)
 	{
 		
 		Chunk temp = focused;
@@ -234,10 +235,41 @@ public class World {
 				}
 				temp = temp.south();
 			}
-		}
-		
+		}	
 	}
 	
+	public void updateRendered(int dir)
+	{
+		switch(dir) {
+		case NORTH:
+			for(Entry<Vector2,Chunk> e : rendered)
+			{
+				rendered.add(e.getID(), e.getElement().north());
+			}
+			break;
+		case EAST:
+			for(Entry<Vector2,Chunk> e : rendered)
+			{
+				rendered.add(e.getID(), e.getElement().east());
+			}
+			break;
+		case SOUTH:
+			for(Entry<Vector2,Chunk> e : rendered)
+			{
+				rendered.add(e.getID(), e.getElement().south());
+			}
+			break;
+		case WEST:
+			System.out.println(rendered.size());
+			for(Entry<Vector2,Chunk> e : rendered)
+			{
+				System.out.println(e.getID() + "," + e.getElement());
+				
+				rendered.add(e.getID(), e.getElement().west());
+			}
+			break;
+		}
+	}
 
 	
 

@@ -31,7 +31,7 @@ public class Gameplay {
 	public Gameplay()
 	{
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-		camera.zoom = (float)(1.0/6.0);
+//		camera.zoom = (float)(.2);
 		batch = new SpriteBatch();
 		
 		isPaused = false;

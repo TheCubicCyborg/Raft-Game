@@ -2,35 +2,47 @@ package com.csds.marineradrift;
 import java.util.AbstractList;
 import java.util.LinkedList;
 import java.util.ListIterator;
-public class Map<I, E> extends AbstractList<E>{
-	LinkedList<Entry> map;
+public class Map<I, E> extends AbstractList<Entry<I,E>>{
+	LinkedList<Entry<I,E>> map;
 	public Map() {
-		map = new LinkedList<Entry>();
+		map = new LinkedList<Entry<I,E>>();
 	}
-	public void add(I id, E element) {
-		map.add(new Entry(id, element));
+	public E add(I id, E element) {
+		for(Entry<I,E> e : map)
+		{
+			if(e.getID() == id)
+			{
+				map.remove(e);
+				map.add(new Entry<I,E>(id,element));
+				return e.getElement();
+			}
+		}
+		map.add(new Entry<I,E>(id, element));
+		return null;
+		
 	}
+	
 	public E getElement(I id) {
-		ListIterator<Entry> itr = map.listIterator();
+		ListIterator<Entry<I,E>> itr = map.listIterator();
 		while(itr.hasNext()) {
-			Entry e = itr.next();
+			Entry<I,E> e = itr.next();
 			if(e.getID().equals(id))
 				return (E)e.getElement();
 		}
 		return null;
 	}
 	
-	public E get(int i)
+	public Entry<I,E> get(int i)
 	{
-		return (E)map.get(i).getElement();
+		return map.get(i);
 	}
 	
-	public E set(int i, E element)
+	public Entry<I,E>  set(int i, Entry<I,E> e)
 	{
-		Entry old = (Entry)map.get(i);
+		Entry<I,E> old = (Entry<I,E>)map.get(i);
 		map.remove(i);
-		map.add(new Entry(old.getID(),element));
-		return (E)old.getElement();
+		map.add(e);
+		return old;
 	}
 	
 	public int size()
