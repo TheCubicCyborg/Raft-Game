@@ -228,26 +228,30 @@ public class Player {
 		if(pos.x >= (currentChunk.x +1) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().east());
-			world.refreshRendered(World.EAST);
+			world.updateRendered(World.EAST);
+//			world.renderNew(World.EAST);
 			currentChunk.x += 1;
 		}
 		else if(pos.x < (currentChunk.x) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().west());
-			world.refreshRendered(World.WEST);
+//			world.renderNew(World.WEST);
+			world.updateRendered(World.WEST);
 			currentChunk.x -= 1;
 		}
 		
 		if(pos.y >= (currentChunk.y +1) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().north());
-			world.refreshRendered(World.NORTH);
+//			world.renderNew(World.NORTH);
+			world.updateRendered(World.NORTH);
 			currentChunk.y += 1;
 		}
 		else if(pos.y < (currentChunk.y) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().south());
-			world.refreshRendered(World.SOUTH);
+//			world.renderNew(World.SOUTH);
+			world.updateRendered(World.SOUTH);
 			currentChunk.y -= 1;
 		}
 		
