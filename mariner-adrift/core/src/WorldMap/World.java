@@ -2,6 +2,7 @@ package WorldMap;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.csds.marineradrift.Entry;
 import com.csds.marineradrift.Map;
 
 public class World {
@@ -23,17 +24,20 @@ public class World {
 	public World(SpriteBatch batch)
 	{
 		rendered = new Map<Vector2, Chunk>();
-		focused = new Chunk(0,0, null, null, null, null, batch);
-		rendered.add(new Vector2(0,0), focused);
 		this.batch = batch;
 		initiateWorld();
 	}
 	
 	public void update(float delta)
 	{
-		for(Chunk c : rendered)
+		for(Entry<Vector2, Chunk> e : rendered)
 		{
-			c.render(delta);
+			
+			if(e.getElement() != null)
+			{
+				e.getElement().render(delta);
+			}
+				
 		}
 	}
 	
@@ -48,16 +52,18 @@ public class World {
 	}
 	
 	
-	public void initiateWorld()
+	private void initiateWorld()
 	{
-		Chunk temp = focused;
+		Chunk temp = new Chunk(0,0,null,null,null,null, batch);
+		rendered.add(new Vector2(0,0),temp);
+		focused = temp;
 		Chunk inner;
 		for(int i = 0; i < renderDistance; i++)
 		{
 			inner = temp;
 			temp.setEast(new Chunk((int)temp.getCoords().x +1, (int)temp.getCoords().y,null,null,null,temp, batch));
 			temp = temp.east();
-			rendered.add(new Vector2(1,0), temp);
+			rendered.add(new Vector2(i+1,0), temp);
 			for(int j = 0; j < i + 1; j++)
 			{
 				temp.setNorth(new Chunk((int)temp.getCoords().x, (int)temp.getCoords().y+1, null,null,temp,null, batch));
@@ -114,17 +120,11 @@ public class World {
 			for(int j = 0; j < i; j++)
 			{
 				temp.setNorth(new Chunk((int)temp.getCoords().x, (int)temp.getCoords().y+1, null,null,temp,null, batch));
-				temp= temp.north();
+				temp = temp.north();
 				rendered.add(new Vector2(temp.getCoords()), temp);
-				if(j != i)
-				{
 					temp.setWest(inner);
 					inner.setEast(temp);
-				}
-			}
-			if(i != 0)
-			{
-				inner = inner.north();
+					inner = inner.north();
 			}
 			temp.setNorth(inner.east());
 			temp.north().setSouth(temp);
@@ -136,7 +136,6 @@ public class World {
 	{
 		
 		Chunk temp = focused;
-		System.out.println("refreshed");
 		if(dir == NORTH)
 		{
 			for(int i = 0; i < renderDistance; i++)
@@ -159,6 +158,7 @@ public class World {
 					temp.west().setEast(temp);
 				}
 				temp = temp.west();
+				temp.south().setNorth(temp);
 			}
 			
 		}
@@ -166,8 +166,8 @@ public class World {
 		{
 			for(int i = 0; i < renderDistance; i++)
 			{
-				if(i<renderDistance -1)
-					temp = temp.east();
+				if(i<renderDistance -1) {
+					temp = temp.east();}
 				temp = temp.south();
 			}
 			if(temp.east() == null)
@@ -184,6 +184,8 @@ public class World {
 					temp.north().setSouth(temp);
 				}
 				temp = temp.north();
+				temp.west().setEast(temp);
+				
 			}
 		}
 		else if(dir == SOUTH)
@@ -208,6 +210,7 @@ public class World {
 					temp.east().setWest(temp);
 				}
 				temp = temp.east();
+				temp.north().setSouth(temp);
 			}
 
 		}
@@ -233,12 +236,46 @@ public class World {
 					temp.south().setNorth(temp);
 				}
 				temp = temp.south();
+				temp.east().setWest(temp);
 			}
 		}
-		
 	}
-	
-
-	
+		
+		public void updateRendered(int dir)
+		{
+			Map<Vector2, Chunk> temp = new Map<Vector2, Chunk>();
+			switch(dir) {
+			case NORTH:
+				for(Entry<Vector2,Chunk> e : rendered)
+				{
+					temp.add(e.getID(), e.getElement().north());
+				}
+				rendered = temp;
+				break;
+			case EAST:
+				for(Entry<Vector2,Chunk> e : rendered)
+				{
+					temp.add(e.getID(), e.getElement().east());
+				}
+				rendered = temp;
+				break;
+			case SOUTH:
+				for(Entry<Vector2,Chunk> e : rendered)
+				{
+					
+					temp.add(e.getID(), e.getElement().south());
+				}
+				rendered = temp;
+				break;
+			case WEST:
+				
+				for(Entry<Vector2,Chunk> e : rendered)
+				{
+					temp.add(e.getID(), e.getElement().west());
+				}
+				rendered = temp;
+				break;
+			}
+		}
 
 }

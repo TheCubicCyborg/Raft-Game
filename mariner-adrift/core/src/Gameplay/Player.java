@@ -85,7 +85,7 @@ public class Player implements Entity {
 
 		player = new Sprite(new Texture("player.png"));
 		
-		currentChunk = world.getFocused().getCoords();
+		currentChunk = new Vector2(world.getFocused().getCoords());
 	}
 	
 	public void update(float deltaTime)
@@ -94,12 +94,6 @@ public class Player implements Entity {
 		if(!Gameplay.isPaused)
 		{
 			processInput();
-			
-			//acc.scl(deltaTime);
-			
-			//vel.add(acc.x, acc.y);
-			//if(acc.x == 0) vel.x *= DAMP;
-			//if(acc.y == 0) vel.y *= DAMP;
 			
 			if(vel.x > MAX_VEL) vel.x = MAX_VEL;
 			if(vel.x < -MAX_VEL) vel.x = -MAX_VEL;
@@ -111,9 +105,7 @@ public class Player implements Entity {
 			vel.scl(1/deltaTime);
 			
 			stateTime += deltaTime;
-			
-//			System.out.println(currentChunk.x + "," + currentChunk.y);
-//			System.out.println(pos.x + "," + pos.y);
+
 		}
 		
 		renderPlayer();
@@ -232,12 +224,14 @@ public class Player implements Entity {
 		{
 			world.setFocused(world.getFocused().east());
 			world.refreshRendered(World.EAST);
+			world.updateRendered(World.EAST);
 			currentChunk.x += 1;
 		}
 		else if(pos.x < (currentChunk.x) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().west());
 			world.refreshRendered(World.WEST);
+			world.updateRendered(World.WEST);
 			currentChunk.x -= 1;
 		}
 		
@@ -245,12 +239,14 @@ public class Player implements Entity {
 		{
 			world.setFocused(world.getFocused().north());
 			world.refreshRendered(World.NORTH);
+			world.updateRendered(World.NORTH);
 			currentChunk.y += 1;
 		}
 		else if(pos.y < (currentChunk.y) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().south());
 			world.refreshRendered(World.SOUTH);
+			world.updateRendered(World.SOUTH);
 			currentChunk.y -= 1;
 		}
 		
