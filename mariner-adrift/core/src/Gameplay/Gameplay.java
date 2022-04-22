@@ -11,6 +11,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import Inventory.Inventory;
 import Inventory.Item;
+import Inventory.ItemPropertiesManager;
+import Screens.GameScreen;
 import WorldMap.World;
 
 public class Gameplay {
@@ -31,11 +33,12 @@ public class Gameplay {
 	public Gameplay()
 	{
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-//		camera.zoom = (float)(1.0/6.0);
+		camera.zoom = (float)(1.0/2.0);
 		batch = new SpriteBatch();
 		
 		isPaused = false;
 		world = new World(batch);
+		ItemPropertiesManager ItemProp = new ItemPropertiesManager();
 		inventory = new Inventory(batch);
 		pauseMenu = new PauseMenu();
 		inventoryOpen = false;
@@ -49,6 +52,8 @@ public class Gameplay {
 	{
 		batch.setProjectionMatrix(camera.combined);
 		
+		batch.begin();
+		
 		world.update(delta);
 		
 		processInputs();
@@ -58,7 +63,7 @@ public class Gameplay {
 		camera.position.set(temp.x,temp.y,0);
 		camera.update();
 		
-		
+
 		
 		if(inventoryOpen)
 		{
@@ -76,6 +81,7 @@ public class Gameplay {
 		else if(!inventoryOpen)
 			isPaused = false;
 		
+		batch.end();
 //		batch.begin();
 //		sprite.draw(batch);
 //		batch.end();

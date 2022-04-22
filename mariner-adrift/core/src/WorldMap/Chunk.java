@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import Entities.Entity;
+import Gameplay.Player;
 
 public class Chunk {
 	//tiles in a chunk
@@ -41,9 +42,8 @@ public class Chunk {
 	
 	public void render(float delta)
 	{
-		batch.begin();
 		batch.draw(back,coords.x * totalSize+1, coords.y * totalSize+1, 254,254);
-		batch.end(); 
+		renderEntities(delta);
 	}
 	
 	public void setTile(int ID, int x, int z) 
@@ -65,8 +65,14 @@ public class Chunk {
 	{
 		for(Entity e : entities)
 		{
-			e.update(delta);
+			if(!(e instanceof Player))
+				e.update(delta);
 		}
+	}
+	
+	public ArrayList<Entity> getEntities()
+	{
+		return entities;
 	}
 	
 	

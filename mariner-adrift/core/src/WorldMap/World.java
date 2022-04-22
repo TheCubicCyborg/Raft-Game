@@ -1,9 +1,14 @@
 package WorldMap;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.csds.marineradrift.Entry;
 import com.csds.marineradrift.Map;
+
+import Entities.DroppedItem;
+import Inventory.Item;
 
 public class World {
 	
@@ -32,13 +37,12 @@ public class World {
 	{
 		for(Entry<Vector2, Chunk> e : rendered)
 		{
-			
 			if(e.getElement() != null)
 			{
 				e.getElement().render(delta);
 			}
-				
 		}
+			
 	}
 	
 	public void setFocused(Chunk c)
@@ -241,7 +245,7 @@ public class World {
 		}
 	}
 		
-		public void updateRendered(int dir)
+	public void updateRendered(int dir)
 		{
 			Map<Vector2, Chunk> temp = new Map<Vector2, Chunk>();
 			switch(dir) {

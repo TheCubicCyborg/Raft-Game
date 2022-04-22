@@ -28,6 +28,11 @@ public class Item {
 		return amt;
 	}
 	
+	public void setAmt(int a)
+	{
+		amt = a;
+	}
+	
 	public int getId()
 	{
 		return itemId;

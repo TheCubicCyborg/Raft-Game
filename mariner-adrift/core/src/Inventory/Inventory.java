@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,17 +22,17 @@ public class Inventory {
 	
 	private Item[][] inventory;
 	private Vector2 screenPos;
-	private Vector2 dim;
 	private Vector2 mousePos;
 	private SpriteBatch batch;
 	private Sprite inv;
-	TextureRegion[][] textures, digits;
+
 	private Item selected;
 	private Texture select;
 	
 	private float timeClicked;
 	private boolean didTake;
 	
+	BitmapFont font;
 	
 	public Inventory(SpriteBatch batch)
 	{
@@ -39,10 +40,9 @@ public class Inventory {
 		inventory = new Item[5][9];
 		this.batch = batch;
 		inv = new Sprite(new Texture("inventory-temp2.png"));
-		textures = new TextureRegion(new Texture("ItemMap.png")).split(20, 20);
-		digits = new TextureRegion(new Texture("digits.png")).split(5, 7);
-		dim = new Vector2(inv.getWidth() * GameScreen.scalar, inv.getHeight() *GameScreen.scalar);
-		screenPos = new Vector2(Gameplay.camera.position.x - dim.x/2, Gameplay.camera.position.y - dim.y/2);
+		screenPos = new Vector2(Gameplay.camera.position.x - inv.getWidth()/2 , Gameplay.camera.position.y - inv.getHeight()/2);
+		inv.setPosition(screenPos.x, screenPos.y);
+		inv.scale(GameScreen.scalar);
 		timeClicked = 0;
 		didTake = false;
 		mousePos = new Vector2();
@@ -52,19 +52,22 @@ public class Inventory {
 		pm.fill();
 		select = new Texture(pm);
 		pm.dispose();
+		
+		font = new BitmapFont();
 	}
 	
 	public void Render(float delta)
 	{
-		screenPos.x = Gameplay.camera.position.x - dim.x/2;
-		screenPos.y = Gameplay.camera.position.y - dim.y/2;
+		screenPos.x = Gameplay.camera.position.x - inv.getWidth()/2;
+		screenPos.y = Gameplay.camera.position.y - inv.getHeight()/2;
 		
-		mousePos.x = Gameplay.camera.position.x - (Gdx.graphics.getWidth()/2) + Gdx.input.getX();
-		mousePos.y = Gameplay.camera.position.y + (Gdx.graphics.getHeight()/2) - Gdx.input.getY();
+		mousePos.x = (int)Gameplay.camera.position.x + (-(Gdx.graphics.getWidth()/2 ) + Gdx.input.getX()) * Gameplay.camera.zoom;
+		mousePos.y = (int)Gameplay.camera.position.y + ((Gdx.graphics.getHeight()/2 ) - Gdx.input.getY()) * Gameplay.camera.zoom;
 		
-		batch.begin();
-		batch.draw(inv, screenPos.x, screenPos.y, dim.x, dim.y);
-		batch.end();
+		
+		
+		inv.setPosition(screenPos.x, screenPos.y);
+		inv.draw(batch);
 		renderItems();
 		if(!Gameplay.pauseOpen)
 		{
@@ -77,6 +80,10 @@ public class Inventory {
 			inventory[2][4] = new Item(1,15);
 			inventory[2][5] = new Item(0,20);
 		}
+		
+		CharSequence str = mousePos.x + "," + mousePos.y;
+
+		font.draw(batch, str, Gameplay.camera.position.x, Gameplay.camera.position.y);
 	}
 	
 	public void dispose()
@@ -85,21 +92,56 @@ public class Inventory {
 		select.dispose();
 	}
 	
+	public boolean add(Item item)
+	{
+		Vector2 emptySlot = null;
+		int row = 0;
+		int col = 0;
+		for(Item[] i : inventory)
+		{
+			for(Item j : i)
+			{
+				if(emptySlot == null && j == null)
+				{
+					emptySlot = new Vector2(row, col);
+				}
+				else if(j != null)
+				{
+					if(j.getId() == item.getId() && j.getAmt() + item.getAmt() <= ItemPropertiesManager.getItemProps(j.getId()).getMaxSize())
+					{
+						j.setAmt(j.getAmt()+item.getAmt());
+						return true;
+					}
+				}
+				
+				
+				col++;
+			}
+			row++;
+		}
+		if(emptySlot != null)
+		{
+			inventory[(int)emptySlot.x][(int)emptySlot.y] = item;
+			return true;
+		}
+		
+		return false;
+	}
+	
 	private void processCursor(float delta)
 	{
 		
 		
 		Vector2 tempCoords;
 		Rectangle tempRect = new Rectangle();
-		batch.begin();
 		for(int r = 0; r < 4; r++)
 		{
 			for(int c = 0; c < 9; c++)
 			{
 				tempCoords = getCoords(r+1,c+1);
 				
-				tempRect.set(tempCoords.x, tempCoords.y, 20*GameScreen.scalar, 20*GameScreen.scalar);
-				if(tempRect.contains(mousePos.x, mousePos.y))
+				tempRect.set(tempCoords.x, tempCoords.y, 20*GameScreen.scalar , 20*GameScreen.scalar);
+				if(tempRect.contains(mousePos.x,mousePos.y))
 				{
 					batch.draw(select, tempCoords.x, tempCoords.y, 20*GameScreen.scalar, 20*GameScreen.scalar);
 					if(inventory[r][c] != null)
@@ -184,30 +226,34 @@ public class Inventory {
 				}
 			}
 		}
-		batch.end();
 	}
 	
 	private void renderSelected()
 	{
 		if(selected != null)
 		{
-			batch.begin();
-			TextureRegion temp = textures[selected.getTextureY()][selected.getTextureX()];
-			batch.draw(temp, mousePos.x - (temp.getRegionWidth()/2  * GameScreen.scalar), mousePos.y - (temp.getRegionHeight()/2 * GameScreen.scalar), 20 * GameScreen.scalar, 20 * GameScreen.scalar);
+			Sprite temp = new Sprite(ItemPropertiesManager.textures[selected.getTextureY()][selected.getTextureX()]);
+			temp.setOrigin(temp.getWidth() * (1f/Gameplay.camera.zoom) / GameScreen.scalar,temp.getHeight() * (1f/Gameplay.camera.zoom) / GameScreen.scalar);
+			temp.scale(1f + Gameplay.camera.zoom);
+			temp.setPosition((Gameplay.camera.position.x - Gdx.graphics.getWidth()/2 + Gdx.input.getX())*(float)(Gameplay.camera.zoom), (Gameplay.camera.position.y + Gdx.graphics.getHeight()/2 - Gdx.input.getY())*(float)(Gameplay.camera.zoom));
+			temp.draw(batch);
 			int num = selected.getAmt();
 			if(num > 1)
 			{
-				int x = (int)(mousePos.x + 8 * GameScreen.scalar);
-				int y = (int)(mousePos.y - 9 * GameScreen.scalar);
+				float x = temp.getX() + 6 * GameScreen.scalar;
+				float y = temp.getY() - 6 * GameScreen.scalar;
 				while(num > 0)
 				{
 					int front = num % 10;
+					temp = new Sprite(ItemPropertiesManager.digits[0][front]);
+					temp.scale(1f + Gameplay.camera.zoom);
+					temp.setPosition(x, y);
+					temp.draw(batch);
+					num /= 10;
 					x -= 4 * GameScreen.scalar;
-					batch.draw(digits[0][front], x, y, digits[0][front].getRegionWidth() * GameScreen.scalar, digits[0][front].getRegionHeight() * GameScreen.scalar);
-					num = num/10;
+					
 				}
 			}
-			batch.end();
 		}
 	}
 	
@@ -221,8 +267,7 @@ public class Inventory {
 				if(item != null)
 				{
 					Vector2 temp = getCoords(i+1,j+1);
-					TextureRegion tempText = textures[item.getTextureY()][item.getTextureX()];
-					batch.begin();
+					TextureRegion tempText = ItemPropertiesManager.textures[item.getTextureY()][item.getTextureX()];
 					batch.draw(tempText, temp.x, temp.y, tempText.getRegionWidth() * GameScreen.scalar, tempText.getRegionHeight() * GameScreen.scalar);
 					
 					int num = item.getAmt();
@@ -233,11 +278,10 @@ public class Inventory {
 						{
 							int front = num % 10;
 							x -= 4 * GameScreen.scalar;
-							batch.draw(digits[0][front], x, temp.y + GameScreen.scalar, digits[0][front].getRegionWidth() * GameScreen.scalar, digits[0][front].getRegionHeight() * GameScreen.scalar);
+							batch.draw(ItemPropertiesManager.digits[0][front], x, temp.y + GameScreen.scalar, ItemPropertiesManager.digits[0][front].getRegionWidth() * GameScreen.scalar, ItemPropertiesManager.digits[0][front].getRegionHeight() * GameScreen.scalar);
 							num = num/10;
 						}
 					}
-					batch.end();
 				}
 			}
 		}

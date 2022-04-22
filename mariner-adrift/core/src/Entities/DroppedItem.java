@@ -1,40 +1,42 @@
 package Entities;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import Inventory.Item;
+import Inventory.ItemPropertiesManager;
+import WorldMap.Chunk;
 
-public class DroppedItem implements Entity{
+public class DroppedItem extends Entity{
 
-	Vector2 pos;
-	Vector2 dim;
-	Rectangle hitbox;
 	Item item;
+	Sprite sprite;
 	
-	public DroppedItem(float x, float y, int w, int h)
+	public DroppedItem(Chunk c, float x, float y, int w, int h, SpriteBatch b, Item i)
 	{
-		pos = new Vector2(x,y);
-		dim = new Vector2(w,h);
-		hitbox = new Rectangle(pos.x,pos.y,dim.x,dim.y);
+		super(c, x, y, w, h, b);
+		item = i;
+		
+		sprite = new Sprite(ItemPropertiesManager.textures[i.getTextureY()][i.getTextureX()], (int)x, (int)y, w, h);
+
 	}
 	
 	public void update(float delta)
 	{
-		
-		hitbox = new Rectangle(pos.x,pos.y,dim.x,dim.y);
 		
 		render(delta);
 	}
 	
 	public void dispose()
 	{
-		
+		currentChunk.removeEntity(this);
 	}
 	
 	public void render(float delta)
 	{
-		
+		sprite.draw(batch);
 	}
 	
 	public Item getItem()
@@ -42,4 +44,8 @@ public class DroppedItem implements Entity{
 		return item;
 	}
 	
+	public String toString()
+	{
+		return "DroppedItem (" + item.getId() + ")";
+	}
 }

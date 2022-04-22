@@ -1,7 +1,9 @@
 package Gameplay;
 
-import com.badlogic.gdx.Gdx;
+import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -9,13 +11,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import Entities.DroppedItem;
 import Entities.Entity;
 import Inventory.Inventory;
+import Inventory.Item;
 import WorldMap.Chunk;
 import WorldMap.World;
 
 
-public class Player implements Entity {
+public class Player extends Entity {
 
 	Vector2 position, speed, acceleration;
 	//STATES
@@ -27,7 +31,8 @@ public class Player implements Entity {
 	static final int PICKUP = 6;
 	static final int DEAD = 7;
 	
-	
+	public static final float width = 16;
+	public static final float height = 32;
 	
 	private boolean inWater; 
 	
@@ -44,48 +49,39 @@ public class Player implements Entity {
 	static float MAX_VEL = 120f;
 	static final float DAMP = 0;
 	
-	Vector2 pos = new Vector2();
-	Vector2 acc = new Vector2();
 	Vector2 vel = new Vector2();
 	Vector2 dir = new Vector2();
-	
-	public Rectangle hitbox = new Rectangle();
 	
 	int state;
 	float stateTime;
 	
 	World world;
-	Vector2 currentChunk;
+	Vector2 currentChunkCoords;
 	
 	private SpriteBatch batch;
 	private Sprite player;
 	
+	Inventory inventory;
+	
 	public Player(World world, Inventory inventory, float x, float y, SpriteBatch batch)
 	{
+		super(world.getFocused(),x,y,width,height,batch);
 		this.batch = batch;
 		
 		inWater = false;
 		
 		this.world = world;
-		pos.x = x;
-		pos.y = y;
-		acc.x = 0;
-		acc.y = 0;
 		vel.x = 0;
 		vel.y = 0;
-		
-		hitbox.height = 0.8f;
-		hitbox.width = 0.6f;
-		hitbox.x = pos.x;
-		hitbox.y = pos.y;
-		
 		
 		state = IDLE;
 		stateTime = 0;
 
 		player = new Sprite(new Texture("player.png"));
 		
-		currentChunk = new Vector2(world.getFocused().getCoords());
+		this.inventory = inventory;
+		
+		currentChunkCoords = new Vector2(world.getFocused().getCoords());
 	}
 	
 	public void update(float deltaTime)
@@ -108,14 +104,14 @@ public class Player implements Entity {
 
 		}
 		
+		player.setOrigin(8, 0);
+		player.setPosition(pos.x, pos.y);
 		renderPlayer();
 	}
 	
 	public void renderPlayer()
 	{
-		batch.begin();
-		batch.draw(player,pos.x, pos.y, 16, 32);
-		batch.end();
+		player.draw(batch);
 	}
 	
 	
@@ -124,6 +120,25 @@ public class Player implements Entity {
 		if(state == DYING || state == DEAD || state == PICKUP)
 			return;
 			
+		if(Gdx.input.isButtonJustPressed(Buttons.RIGHT))
+		{
+			ArrayList<Entity> temp = super.overlaps();
+			
+			if(temp != null)
+			{
+				for(Entity e : temp)
+				{
+					
+					if(e instanceof DroppedItem)
+					{
+						
+						pickUp((DroppedItem) e);
+						return;
+					}
+				}
+			}
+		}
+		
 		if(Gdx.input.isKeyPressed(Keys.CONTROL_LEFT))
 		{
 			MAX_VEL = RUN_VEL;
@@ -191,6 +206,13 @@ public class Player implements Entity {
 			if(!Gdx.input.isKeyPressed(Keys.D))
 				vel.x = 0;
 		}
+		
+		
+		if(Gdx.input.isKeyJustPressed(Keys.O))
+		{
+			new DroppedItem(currentChunk,currentChunk.getCoords().x * Chunk.totalSize, currentChunk.getCoords().y * Chunk.totalSize, 20,20, batch, new Item(1, 5));
+		}
+		
 	}
 	
 	private void tryMove()
@@ -202,8 +224,13 @@ public class Player implements Entity {
 		}
 	}
 	
-	private void pickUp()
+	private void pickUp(DroppedItem item)
 	{
+		if(inventory.add(item.getItem()))
+		{
+			item.dispose();
+		}
+		
 		
 	}
 	
@@ -220,34 +247,38 @@ public class Player implements Entity {
 	public void chunkMovementCheck()
 	{		
 		
-		if(pos.x >= (currentChunk.x +1) * Chunk.totalSize)
+		if(pos.x >= (currentChunkCoords.x +1) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().east());
 			world.refreshRendered(World.EAST);
 			world.updateRendered(World.EAST);
-			currentChunk.x += 1;
+			currentChunk = currentChunk.east();
+			currentChunkCoords.x += 1;
 		}
-		else if(pos.x < (currentChunk.x) * Chunk.totalSize)
+		else if(pos.x < (currentChunkCoords.x) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().west());
 			world.refreshRendered(World.WEST);
 			world.updateRendered(World.WEST);
-			currentChunk.x -= 1;
+			currentChunk = currentChunk.west();
+			currentChunkCoords.x -= 1;
 		}
 		
-		if(pos.y >= (currentChunk.y +1) * Chunk.totalSize)
+		if(pos.y >= (currentChunkCoords.y +1) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().north());
 			world.refreshRendered(World.NORTH);
 			world.updateRendered(World.NORTH);
-			currentChunk.y += 1;
+			currentChunk = currentChunk.north();
+			currentChunkCoords.y += 1;
 		}
-		else if(pos.y < (currentChunk.y) * Chunk.totalSize)
+		else if(pos.y < (currentChunkCoords.y) * Chunk.totalSize)
 		{
 			world.setFocused(world.getFocused().south());
 			world.refreshRendered(World.SOUTH);
 			world.updateRendered(World.SOUTH);
-			currentChunk.y -= 1;
+			currentChunk = currentChunk.south();
+			currentChunkCoords.y -= 1;
 		}
 		
 
@@ -255,5 +286,10 @@ public class Player implements Entity {
 	}
 	public void update() {
 		
+	}
+	
+	public String toString()
+	{
+		return "Player";
 	}
 }
