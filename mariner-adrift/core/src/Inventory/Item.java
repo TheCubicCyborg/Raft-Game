@@ -1,6 +1,6 @@
 package Inventory;
 
-public class Item {
+public class Item implements Comparable{
 
 	private int amt;
 	private int itemId;
@@ -75,5 +75,17 @@ public class Item {
 		}
 		else
 			return this;
+	}
+	public boolean equals(Item other) {
+		return itemId == other.itemId;
+	}
+	public int compareTo(Object o) {
+		Item other = (Item) o;
+		if (amt < other.amt)
+			return -1;
+		else if (amt == other.amt)
+			return 0;
+		else
+			return 1;
 	}
 }

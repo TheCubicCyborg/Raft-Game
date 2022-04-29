@@ -128,6 +128,36 @@ public class Inventory {
 		return false;
 	}
 	
+	public Vector2 getFirstStack(Item item) {
+		int iPos = 0;
+		int jPos = 0;
+		for(Item[] i : inventory) {
+			for (Item j: i) {
+				if(j != null) {
+					if(item.equals(j) && item.compareTo(j) <= 0)
+						return new Vector2(iPos, jPos);
+				}
+				jPos++;
+			}
+			iPos++;
+			jPos = 0;
+		}
+		return null;
+	}
+	
+	public boolean remove(Item item) {
+		Vector2 v = getFirstStack(item);
+		if(v == null) {
+			return false;
+		}
+		if (inventory[(int) v.x][(int) v.y].compareTo(item) == 0) 
+			inventory[(int) v.x][(int) v.y] = null;
+		else 
+			inventory[(int) v.x][(int) v.y].setAmt(inventory[(int) v.x][(int) v.y].getAmt() - item.getAmt());
+		return true;
+		
+	}
+	
 	private void processCursor(float delta)
 	{
 		
