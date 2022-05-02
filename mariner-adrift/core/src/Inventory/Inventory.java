@@ -42,7 +42,7 @@ public class Inventory {
 		inv = new Sprite(new Texture("inventory-temp2.png"));
 		screenPos = new Vector2(Gameplay.camera.position.x - inv.getWidth()/2 , Gameplay.camera.position.y - inv.getHeight()/2);
 		inv.setPosition(screenPos.x, screenPos.y);
-		inv.scale(GameScreen.scalar);
+		inv.setSize(inv.getWidth()* GameScreen.scalar, inv.getHeight()* GameScreen.scalar);
 		timeClicked = 0;
 		didTake = false;
 		mousePos = new Vector2();
@@ -81,7 +81,7 @@ public class Inventory {
 			inventory[2][5] = new Item(0,20);
 		}
 		
-		CharSequence str = mousePos.x + "," + mousePos.y;
+		CharSequence str = screenPos.x + "," + screenPos.y + " \n " + mousePos.x + "," + mousePos.y + "\n" + Gameplay.camera.position + "\n" + getCoords(1,1);
 
 		font.draw(batch, str, Gameplay.camera.position.x, Gameplay.camera.position.y);
 	}
@@ -140,10 +140,10 @@ public class Inventory {
 			{
 				tempCoords = getCoords(r+1,c+1);
 				
-				tempRect.set(tempCoords.x, tempCoords.y, 20*GameScreen.scalar , 20*GameScreen.scalar);
+				tempRect.set(tempCoords.x, tempCoords.y, 20*(GameScreen.scalar), 20*(GameScreen.scalar));
 				if(tempRect.contains(mousePos.x,mousePos.y))
 				{
-					batch.draw(select, tempCoords.x, tempCoords.y, 20*GameScreen.scalar, 20*GameScreen.scalar);
+					batch.draw(select, tempCoords.x, tempCoords.y, 20*(GameScreen.scalar), 20*(GameScreen.scalar));
 					if(inventory[r][c] != null)
 					{
 						Item item = inventory[r][c];
@@ -233,24 +233,23 @@ public class Inventory {
 		if(selected != null)
 		{
 			Sprite temp = new Sprite(ItemPropertiesManager.textures[selected.getTextureY()][selected.getTextureX()]);
-			temp.setOrigin(temp.getWidth() * (1f/Gameplay.camera.zoom) / GameScreen.scalar,temp.getHeight() * (1f/Gameplay.camera.zoom) / GameScreen.scalar);
-			temp.scale(1f + Gameplay.camera.zoom);
-			temp.setPosition((Gameplay.camera.position.x - Gdx.graphics.getWidth()/2 + Gdx.input.getX())*(float)(Gameplay.camera.zoom), (Gameplay.camera.position.y + Gdx.graphics.getHeight()/2 - Gdx.input.getY())*(float)(Gameplay.camera.zoom));
+			temp.setSize(temp.getWidth()*GameScreen.scalar,temp.getHeight() * GameScreen.scalar);
+			temp.setPosition(mousePos.x - temp.getWidth()/2, mousePos.y - temp.getHeight()/2);
 			temp.draw(batch);
 			int num = selected.getAmt();
 			if(num > 1)
 			{
-				float x = temp.getX() + 6 * GameScreen.scalar;
-				float y = temp.getY() - 6 * GameScreen.scalar;
+				float x = temp.getX() + 14 * (GameScreen.scalar);
+				float y = temp.getY() + 1 * (GameScreen.scalar);
 				while(num > 0)
 				{
 					int front = num % 10;
 					temp = new Sprite(ItemPropertiesManager.digits[0][front]);
-					temp.scale(1f + Gameplay.camera.zoom);
+					temp.setSize(temp.getWidth()*GameScreen.scalar, temp.getHeight()*GameScreen.scalar);
 					temp.setPosition(x, y);
 					temp.draw(batch);
 					num /= 10;
-					x -= 4 * GameScreen.scalar;
+					x -= 4 * (GameScreen.scalar);
 					
 				}
 			}
@@ -267,18 +266,20 @@ public class Inventory {
 				if(item != null)
 				{
 					Vector2 temp = getCoords(i+1,j+1);
-					TextureRegion tempText = ItemPropertiesManager.textures[item.getTextureY()][item.getTextureX()];
-					batch.draw(tempText, temp.x, temp.y, tempText.getRegionWidth() * GameScreen.scalar, tempText.getRegionHeight() * GameScreen.scalar);
+					Sprite tempSprite = new Sprite(ItemPropertiesManager.textures[item.getTextureY()][item.getTextureX()]);
+					tempSprite.setPosition(temp.x, temp.y);
+					tempSprite.setSize(tempSprite.getWidth()* GameScreen.scalar, tempSprite.getHeight()* GameScreen.scalar);
+					tempSprite.draw(batch);
 					
 					int num = item.getAmt();
 					if(num > 1)
 					{
-						int x = (int)temp.x + (int)(18 * GameScreen.scalar);
+						int x = (int)temp.x + (int)(18 * (GameScreen.scalar));
 						while(num > 0)
 						{
 							int front = num % 10;
 							x -= 4 * GameScreen.scalar;
-							batch.draw(ItemPropertiesManager.digits[0][front], x, temp.y + GameScreen.scalar, ItemPropertiesManager.digits[0][front].getRegionWidth() * GameScreen.scalar, ItemPropertiesManager.digits[0][front].getRegionHeight() * GameScreen.scalar);
+							batch.draw(ItemPropertiesManager.digits[0][front], x, temp.y + 1 * (GameScreen.scalar), ItemPropertiesManager.digits[0][front].getRegionWidth() * (GameScreen.scalar), ItemPropertiesManager.digits[0][front].getRegionHeight() * ( GameScreen.scalar));
 							num = num/10;
 						}
 					}
@@ -287,20 +288,21 @@ public class Inventory {
 		}
 	}
 	
-	//given row and column of inventory, returns coordinates
+	//given row and column of inventory, returns world coordinates
 	private Vector2 getCoords(int r, int c)
 	{
 		Vector2 ret = new Vector2();
 		ret.x = 2 + (22*(c-1));
 		ret.x *= GameScreen.scalar;
+		ret.x += screenPos.x;
+		
+		
 		if(r == 1)
 			ret.y = 2;
 		else
 			ret.y = 6 + (22*(r-1));
 		ret.y *= GameScreen.scalar;
-		
-		ret.x = screenPos.x + ret.x;
-		ret.y = screenPos.y + ret.y;
+		ret.y += screenPos.y;
 		
 		return ret;
 	}
