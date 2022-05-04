@@ -13,7 +13,7 @@ public class Chunk {
 	//tiles in a chunk
 	private static final int chunkSize = 16;
 	//pixels/units in a tile
-	private static final int tileSize = 16;
+	public  static final int tileSize = 20;
 	public static final int totalSize = chunkSize*tileSize;
 	
 	
@@ -37,18 +37,31 @@ public class Chunk {
 		west = w;
 		
 		batch = b;
-		back = new Sprite(new Texture("Chunk.png"));
+		back = new Sprite(new Texture("ChunkBack.png"));
+		initiateTiles();
+	}
+	
+	public void initiateTiles()
+	{
+		for(int i = 0; i < 16; i++)
+		{
+			for(int j = 0; j < 16; j++)
+			{
+				setTile(0, 0, i, j);
+			}
+		}
 	}
 	
 	public void render(float delta)
 	{
-		batch.draw(back,coords.x * totalSize+1, coords.y * totalSize+1, 254,254);
+		batch.draw(back,coords.x * totalSize+1, coords.y * totalSize+1, totalSize, totalSize);
 		renderEntities(delta);
+		renderTiles(delta);
 	}
 	
-	public void setTile(int ID, int x, int z) 
+	public void setTile(int backID,int foreID, int x, int y) 
 	{
-		chunk[x][z] = new Tile(ID, x, z, this);
+		chunk[x][y] = new Tile(backID, foreID, (int)(coords.x * chunkSize + x), (int)(coords.y * chunkSize + y), this, batch);
 	}
 	
 	public void addEntity(Entity e)
@@ -67,6 +80,18 @@ public class Chunk {
 		{
 			if(!(e instanceof Player))
 				e.update(delta);
+		}
+	}
+	
+	public void renderTiles(float delta)
+	{
+		for(int i = 0; i < chunk.length; i++)
+		{
+			for(int j = 0; j < chunk[i].length; j++)
+			{
+				if(chunk[i][j] != null)
+					chunk[i][j].render();
+			}
 		}
 	}
 	

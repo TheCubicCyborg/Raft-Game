@@ -13,6 +13,7 @@ import Inventory.Inventory;
 import Inventory.Item;
 import Inventory.ItemPropertiesManager;
 import Screens.GameScreen;
+import WorldMap.TilePropertiesManager;
 import WorldMap.World;
 
 public class Gameplay {
@@ -35,10 +36,12 @@ public class Gameplay {
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 		camera.zoom = (float)(1.0/2.0);
 		batch = new SpriteBatch();
+		TilePropertiesManager tileProp = new TilePropertiesManager();
 		
 		isPaused = false;
 		world = new World(batch);
 		ItemPropertiesManager ItemProp = new ItemPropertiesManager();
+		
 		inventory = new Inventory(batch);
 		pauseMenu = new PauseMenu();
 		inventoryOpen = false;
