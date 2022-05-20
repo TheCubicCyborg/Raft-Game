@@ -2,22 +2,26 @@ package Gameplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PauseMenu {
 	SpriteBatch batch;
-	Texture img;
+	Sprite img;
 	
-	public PauseMenu()
+	public PauseMenu(SpriteBatch batch)
 	{
-		batch = new SpriteBatch();
-		img = new Texture("paused.png");
+		this.batch = batch;
+		img = new Sprite(new Texture("paused.png"));
+		img.setSize(600, 282);
+		img.setPosition(Gameplay.camera.position.x - img.getWidth()/2 , Gameplay.camera.position.y - img.getHeight()/2);
+		
+		
 	}
 	
 	public void render(float delta)
 	{
-		batch.begin();
-		batch.draw(img, Gdx.graphics.getWidth()/2 - 600, Gdx.graphics.getHeight()/2 - 282, 1200, 564);
-		batch.end();
+		img.setPosition(Gameplay.camera.position.x - img.getWidth()/2 , Gameplay.camera.position.y - img.getHeight()/2);
+		img.draw(batch);
 	}
 }

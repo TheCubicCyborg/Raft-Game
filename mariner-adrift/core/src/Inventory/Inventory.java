@@ -32,8 +32,6 @@ public class Inventory {
 	private float timeClicked;
 	private boolean didTake;
 	
-	BitmapFont font;
-	
 	public Inventory(SpriteBatch batch)
 	{
 		//first 3 rows are main inventory, row 4 is hotbar, row 5 is miscelaneous slots ie. Armor, equippables
@@ -52,8 +50,6 @@ public class Inventory {
 		pm.fill();
 		select = new Texture(pm);
 		pm.dispose();
-		
-		font = new BitmapFont();
 	}
 	
 	public void Render(float delta)
@@ -80,10 +76,6 @@ public class Inventory {
 			inventory[2][4] = new Item(1,15);
 			inventory[2][5] = new Item(0,20);
 		}
-		
-		CharSequence str = screenPos.x + "," + screenPos.y + " \n " + mousePos.x + "," + mousePos.y + "\n" + Gameplay.camera.position + "\n" + getCoords(1,1);
-
-		font.draw(batch, str, Gameplay.camera.position.x, Gameplay.camera.position.y);
 	}
 	
 	public void dispose()

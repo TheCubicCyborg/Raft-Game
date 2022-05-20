@@ -32,6 +32,16 @@ public class Map<I, E> extends AbstractList<Entry<I,E>>{
 		return null;
 	}
 	
+	public I getKey(E element) {
+		ListIterator<Entry<I,E>> itr = map.listIterator();
+		while(itr.hasNext()) {
+			Entry<I,E> e = itr.next();
+			if(e.getElement().equals(element))
+				return (I)e.getID();
+		}
+		return null;
+	}
+	
 	public Entry<I,E> get(int i)
 	{
 		return map.get(i);

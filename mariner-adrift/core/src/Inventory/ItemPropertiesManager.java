@@ -23,9 +23,9 @@ public class ItemPropertiesManager {
 	
 	public void initiateProperties()
 	{
-		ip.add(0,new ItemProperties(64,false));
-		ip.add(1,new ItemProperties(64,false));
-		ip.add(2,new ItemProperties(64,false));
+		ip.add(0,new ItemProperties("Wood",64,false));
+		ip.add(1,new ItemProperties("Stone",64,false));
+		ip.add(2,new ItemProperties("Fiber",64,false));
 	}
 	
 }

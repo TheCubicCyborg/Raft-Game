@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import WorldMap.Chunk;
+import WorldMap.World;
 
 public class Entity {
 	
@@ -47,6 +48,49 @@ public class Entity {
 	
 	public void dispose() 
 	{
+		
+	}
+	
+	public Rectangle hitBox()
+	{
+		return hitBox;
+	}
+	
+	public Chunk getCurrentChunk()
+	{
+		return currentChunk;
+	}
+	
+	public void chunkMovementCheck()
+	{		
+		
+		if(pos.x >= (currentChunk.getCoords().x +1) * Chunk.totalSize)
+		{
+			currentChunk.removeEntity(this);
+			currentChunk.east().addEntity(this);
+			currentChunk = currentChunk.east();
+		}
+		else if(pos.x < (currentChunk.getCoords().x) * Chunk.totalSize)
+		{
+			currentChunk.removeEntity(this);
+			currentChunk.west().addEntity(this);
+			currentChunk = currentChunk.west();
+		}
+		
+		if(pos.y >= (currentChunk.getCoords().y +1) * Chunk.totalSize)
+		{
+			currentChunk.removeEntity(this);
+			currentChunk.north().addEntity(this);
+			currentChunk = currentChunk.north();
+		}
+		else if(pos.y < (currentChunk.getCoords().y) * Chunk.totalSize)
+		{
+			currentChunk.removeEntity(this);
+			currentChunk.south().addEntity(this);
+			currentChunk = currentChunk.south();
+		}
+		
+
 		
 	}
 }

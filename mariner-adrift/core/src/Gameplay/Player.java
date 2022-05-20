@@ -6,13 +6,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import Entities.DroppedItem;
 import Entities.Entity;
+import Entities.Raft;
 import Inventory.Inventory;
 import Inventory.Item;
 import WorldMap.Chunk;
@@ -32,7 +35,9 @@ public class Player extends Entity {
 	static final int DEAD = 7;
 	
 	public static final float width = 16;
-	public static final float height = 32;
+	public static final float height = 8;
+	
+	private static TextureRegion[][] frames;
 	
 	private boolean inWater; 
 	
@@ -52,6 +57,9 @@ public class Player extends Entity {
 	Vector2 vel = new Vector2();
 	Vector2 dir = new Vector2();
 	
+	//0 = down, 1 = left, 2 = up, 3 = right
+	int facing;
+	
 	int state;
 	float stateTime;
 	
@@ -62,8 +70,12 @@ public class Player extends Entity {
 	private Sprite player;
 	
 	Inventory inventory;
+	Raft raft;
 	
-	public Player(World world, Inventory inventory, float x, float y, SpriteBatch batch)
+	BitmapFont font;
+	boolean onRaft;
+	
+	public Player(World world, Inventory inventory, Raft r, float x, float y, SpriteBatch batch)
 	{
 		super(world.getFocused(),x,y,width,height,batch);
 		this.batch = batch;
@@ -74,14 +86,22 @@ public class Player extends Entity {
 		vel.x = 0;
 		vel.y = 0;
 		
+		facing = 0;
+		
 		state = IDLE;
 		stateTime = 0;
-
-		player = new Sprite(new Texture("player.png"));
+		
+		frames = new TextureRegion(new Texture("PlayerFrames.png")).split(16, 32);
+		
+		player = new Sprite(frames[0][0]);
 		
 		this.inventory = inventory;
+		raft = r;
 		
 		currentChunkCoords = new Vector2(world.getFocused().getCoords());
+		
+		font = new BitmapFont();
+		onRaft = false;
 	}
 	
 	public void update(float deltaTime)
@@ -104,13 +124,36 @@ public class Player extends Entity {
 
 		}
 		
-		player.setOrigin(8, 0);
 		player.setPosition(pos.x, pos.y);
+		hitBox.setPosition(pos);
 		renderPlayer();
+		
+		if(raft.overlaps(hitBox))
+		{
+			onRaft = true;
+		}
+		else
+		{
+			onRaft = false;
+		}
+		
+		CharSequence str = onRaft + "\n" + raft.getCurrentChunk().getCoords() + "\n";
+
+		font.draw(batch, str, Gameplay.camera.position.x, Gameplay.camera.position.y);
 	}
 	
 	public void renderPlayer()
 	{
+		if(facing == 0)
+			player.setRegion(frames[0][0]);
+		else if(facing == 1)
+			player.setRegion(frames[0][1]);
+		else if(facing == 2)
+			player.setRegion(frames[0][2]);
+		else if(facing == 3)
+			player.setRegion(frames[0][3]);
+		
+			
 		player.draw(batch);
 	}
 	
@@ -155,6 +198,11 @@ public class Player extends Entity {
 			dir.y = UP;
 			//acc.y = ACC * dir.y;
 			vel.y = MAX_VEL * dir.y;
+			facing = 2;
+			if(Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.A))
+			{
+				vel.y = (float)Math.sqrt(vel.y*vel.y * 2) * dir.y;
+			}
 			wTimer++;
 		}
 		else
@@ -170,6 +218,11 @@ public class Player extends Entity {
 			dir.y = DOWN;
 			//acc.y = ACC * dir.y;
 			vel.y = MAX_VEL * dir.y;
+			facing = 0;
+			if(Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.A))
+			{
+				vel.y = (float)Math.sqrt(vel.y*vel.y * 2) * dir.y;
+			}
 			sTimer++;
 		}
 		else
@@ -184,6 +237,11 @@ public class Player extends Entity {
 			dir.x = RIGHT;
 			//acc.x = ACC * dir.x;
 			vel.x = MAX_VEL * dir.x;
+			facing = 3;
+			if(Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.S))
+			{
+				vel.x = (float)Math.sqrt(vel.x*vel.x * 2) * dir.x;
+			}
 			dTimer++;
 		}
 		else
@@ -198,6 +256,11 @@ public class Player extends Entity {
 			dir.x = LEFT;
 			//acc.x = ACC * dir.x;
 			vel.x = MAX_VEL*dir.x;
+			facing = 1;
+			if(Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.S))
+			{
+				vel.x = (float)Math.sqrt(vel.x*vel.x * 2) * dir.x;
+			}
 			aTimer++;
 		}
 		else
@@ -288,9 +351,6 @@ public class Player extends Entity {
 		}
 		
 
-		
-	}
-	public void update() {
 		
 	}
 	
