@@ -27,4 +27,7 @@ public class Tree<E> {
 		}
 		return null;
 	}
+	public Node getRoot() {
+		return root;
+	}
 }

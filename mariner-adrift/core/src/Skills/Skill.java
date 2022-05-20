@@ -86,5 +86,8 @@ public class Skill {
 		else
 			return false;
 	}
+	public boolean equals(Skill o) {
+		return name.equals(o.name);
+	}
 	
 }
