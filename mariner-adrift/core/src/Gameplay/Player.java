@@ -34,8 +34,8 @@ public class Player extends Entity {
 	static final int PICKUP = 6;
 	static final int DEAD = 7;
 	
-	public static final float width = 16;
-	public static final float height = 8;
+	public static final float width = 32;
+	public static final float height = 16;
 	
 	private static TextureRegion[][] frames;
 	
@@ -73,7 +73,6 @@ public class Player extends Entity {
 	Raft raft;
 	
 	BitmapFont font;
-	boolean onRaft;
 	
 	public Player(World world, Inventory inventory, Raft r, float x, float y, SpriteBatch batch)
 	{
@@ -100,8 +99,7 @@ public class Player extends Entity {
 		
 		currentChunkCoords = new Vector2(world.getFocused().getCoords());
 		
-		font = new BitmapFont();
-		onRaft = false;
+		inWater = true;
 	}
 	
 	public void update(float deltaTime)
@@ -130,28 +128,40 @@ public class Player extends Entity {
 		
 		if(raft.overlaps(hitBox))
 		{
-			onRaft = true;
+			inWater = false;
 		}
 		else
 		{
-			onRaft = false;
+			inWater = true;;
 		}
 		
-		CharSequence str = onRaft + "\n" + raft.getCurrentChunk().getCoords() + "\n";
-
-		font.draw(batch, str, Gameplay.camera.position.x, Gameplay.camera.position.y);
 	}
 	
 	public void renderPlayer()
 	{
-		if(facing == 0)
-			player.setRegion(frames[0][0]);
-		else if(facing == 1)
-			player.setRegion(frames[0][1]);
-		else if(facing == 2)
-			player.setRegion(frames[0][2]);
-		else if(facing == 3)
-			player.setRegion(frames[0][3]);
+		if(inWater)
+		{
+			if(facing == 0)
+				player.setRegion(frames[0][4]);
+			else if(facing == 1)
+				player.setRegion(frames[0][5]);
+			else if(facing == 2)
+				player.setRegion(frames[0][6]);
+			else if(facing == 3)
+				player.setRegion(frames[0][7]);
+		}
+		else
+		{
+			if(facing == 0)
+				player.setRegion(frames[0][0]);
+			else if(facing == 1)
+				player.setRegion(frames[0][1]);
+			else if(facing == 2)
+				player.setRegion(frames[0][2]);
+			else if(facing == 3)
+				player.setRegion(frames[0][3]);
+		}
+			
 		
 			
 		player.draw(batch);

@@ -42,7 +42,7 @@ public class Raft extends Entity{
 	
 	public void initiateRaft(SpriteBatch b)
 	{
-		RaftTile m = new RaftTile(this, 1, 0, 0, 0, b, null,null,null,null );
+		RaftTile m = new RaftTile(this, 1, 1, 0, 0, b, null,null,null,null );
 		RaftTile r = new RaftTile(this, 1, 0, 1, 0, b, null,null,null,null );
 		RaftTile ur = new RaftTile(this, 1, 0, 1, 1, b, null,null,null,null );
 		RaftTile u = new RaftTile(this, 1, 0, 0, 1, b, null,null,null,null );

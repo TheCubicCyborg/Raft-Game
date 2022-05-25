@@ -43,7 +43,7 @@ public class Entity {
 	
 	public void update(float delta)
 	{
-		
+		hitBox.setPosition(pos);
 	}
 	
 	public void dispose() 

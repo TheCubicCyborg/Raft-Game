@@ -21,6 +21,7 @@ import com.csds.marineradrift.Entry;
 import com.csds.marineradrift.Map;
 import com.csds.marineradrift.MarinerInputProcessor;
 
+import Gameplay.Gameplay;
 import Inventory.Item;
 import Inventory.ItemPropertiesManager;
 import WorldMap.TilePropertiesManager;
@@ -31,6 +32,7 @@ public class ScrollList {
 	private ArrayList<Item> items;
 	private SpriteBatch batch;
 	private int x,y,w,h,scrollY = 80;
+	private Pixmap listMap,shadeMap;
 	private Texture list, shade, background;
 	private Rectangle hitBox;
 	private ArrayList<Rectangle> hitBoxes;
@@ -38,16 +40,20 @@ public class ScrollList {
 	private Item selected;
 	private float scale;
 	
-	Vector2 mousePos;
+	Vector2 mousePos,screenPos;
 	
 	BitmapFont font;
 	
 	public ScrollList(ArrayList<Item> items, int x, int y, int width, int height, float scale, SpriteBatch batch)
 	{
+		
 		this.scale = scale;
 		selected = null;
 		this.batch = batch;
 		this.items = items;
+		screenPos = new Vector2();
+		screenPos.x = x;
+		screenPos.y = y;
 		this.x = x;
 		this.y = y;
 		w = width;
@@ -68,6 +74,7 @@ public class ScrollList {
 		temp = new Pixmap(width - 4, 20*(int)scale, Format.RGBA8888);
 		temp.setColor(0,0,0,.1f);
 		temp.fill();
+		shadeMap = temp;
 		shade = new Texture(temp);
 		
 		initiateList();
@@ -112,21 +119,29 @@ public class ScrollList {
 		temp2.setFilter(Filter.NearestNeighbour);
 		temp2.drawPixmap(temp, 0,0,temp.getWidth(), temp.getHeight(),0,0,temp2.getWidth(),temp2.getHeight());
 		list = new Texture(temp2);
+		
+		listMap = temp2;
 		temp.dispose();
-		temp2.dispose();
 		
 		
 	}
 	
+	public Item getSelected()
+	{
+		return selected;
+	}
+	
 	public void render()
 	{
+		x = (int) (Gameplay.camera.position.x + screenPos.x/scale);
+		y = (int)(Gameplay.camera.position.y + screenPos.y/scale);
+		
 		mousePos.x = Gdx.input.getX()-Gdx.graphics.getWidth()/2;
 		mousePos.y = -(Gdx.input.getY()-Gdx.graphics.getHeight()/2);
 		
 		font.draw(batch, Gdx.input.getX() + "," + Gdx.input.getY() + "\n" + mousePos,100,100);
 		if(hitBox.contains(mousePos.x,mousePos.y))
 		{
-			font.draw(batch, "Hitting",x, y);
 			if(Gdx.input.isButtonJustPressed(Buttons.LEFT))
 			{
 				for(Rectangle r : hitBoxes)
@@ -159,22 +174,24 @@ public class ScrollList {
 			}
 		}
 		
+		Pixmap tempPixmap = new Pixmap(listMap.getWidth(),listMap.getHeight(),Format.RGBA8888);
+		tempPixmap.drawPixmap(listMap,0,0);
+		if(selected != null)
+		{
+			tempPixmap.drawPixmap(shadeMap,0, 22*(int)scale * items.indexOf(selected));
+		}
 		
-		
-		batch.draw(background, x/scale,y / scale);
+		batch.draw(background, x,y);
 		if(list.getHeight()<h)
 		{
-			batch.draw(list, x/scale +2, y/scale-2 + (h - list.getHeight()), 0, scrollY, w-4, list.getHeight());
+			batch.draw(new Texture(tempPixmap), x +2, y-2 + (h - list.getHeight()), 0, scrollY, w-4, list.getHeight());
 		}
 		else
 		{
-			batch.draw(list, x/scale +2, y/scale+2, 0, scrollY, w-4, h-4);
+			batch.draw(new Texture(tempPixmap), x +2, y+2, 0, scrollY, w-4, h-4);
 		}
 		
-		if(selected != null)
-		{
-			batch.draw(shade, x/scale + 2, itemBoxes.getKey(selected).y/scale);
-		}
+		
 	}
 	
 }

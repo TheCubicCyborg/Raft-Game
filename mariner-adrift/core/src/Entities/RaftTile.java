@@ -16,8 +16,9 @@ public class RaftTile {
 
 	private SpriteBatch batch;
 	private Sprite sprite;
-	Vector2 pos;
+	Vector2 pos, raftPos;
 	private Raft raft;
+	private CraftingStation station;
 	
 	private RaftTile north, east, south, west;
 	
@@ -25,13 +26,14 @@ public class RaftTile {
 	{
 		raft = r;
 		this.batch = batch;
-		pos = new Vector2(x,y);
+		raftPos = new Vector2(x,y);
+		pos = new Vector2(raft.pos.x + x, raft.pos.y + y);
 		
 		north = n;
 		east = e;
 		south = s;
 		west = w;
-		
+		station = null;
 		
 		if(b != 0)
 		{
@@ -58,15 +60,21 @@ public class RaftTile {
 			        temp.drawPixel(X,Y,colorInt);
 			    }
 			}
-			
+			if(f == 1)
+				station = new CraftingStation(raft.getCurrentChunk(),this,batch);
+				
 			sprite = new Sprite(new Texture(temp));
 		}
 	}
 	
 	public void render()
 	{
-		sprite.setPosition(raft.pos.x + pos.x * Chunk.tileSize, raft.pos.y + pos.y * Chunk.tileSize);
+		pos.x = raft.pos.x + raftPos.x*Chunk.tileSize; 
+		pos.y = raft.pos.y + raftPos.y*Chunk.tileSize;
+		sprite.setPosition(pos.x,pos.y);
 		sprite.draw(batch);
+		if(station != null)
+			station.update();
 	}
 	
 	

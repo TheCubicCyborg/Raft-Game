@@ -13,7 +13,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.csds.marineradrift.MarinerInputProcessor;
 
 import Entities.Raft;
+import Interfaces.Button;
+import Interfaces.Crafting;
 import Interfaces.ScrollList;
+import Interfaces.Text;
 import Inventory.Inventory;
 import Inventory.Item;
 import Inventory.ItemPropertiesManager;
@@ -30,7 +33,7 @@ public class Gameplay {
 	private Inventory inventory;
 	private PauseMenu pauseMenu;
 	public static boolean pauseOpen;
-	private boolean inventoryOpen;
+	private static boolean inventoryOpen, craftingOpen;
 	
 	SpriteBatch batch;
 	public static OrthographicCamera camera;
@@ -39,7 +42,8 @@ public class Gameplay {
 	
 	private Raft raft;
 	
-	ScrollList tempList;
+	ArrayList<Item> craftableItems;
+	private Crafting craftingInterface;
 	
 	public Gameplay()
 	{
@@ -56,6 +60,7 @@ public class Gameplay {
 		inventory = new Inventory(batch);
 		pauseMenu = new PauseMenu(batch);
 		inventoryOpen = false;
+		craftingOpen = false;
 		pauseOpen = false;
 		
 
@@ -65,13 +70,14 @@ public class Gameplay {
 		
 		sprite = new Sprite(new Texture("badlogic.jpg"));
 		
-		ArrayList<Item> temp = new ArrayList<Item>();
-		temp.add(new Item(0,5));
-		temp.add(new Item(0,5));
-		temp.add(new Item(0,5));
-		temp.add(new Item(1,4));
-		temp.add(new Item(2, 2));
-		tempList = new ScrollList(temp, 200,-200, 86, 100, 2f, batch);
+		craftableItems = new ArrayList<Item>();
+		craftableItems.add(new Item(0,5));
+		craftableItems.add(new Item(0,5));
+		craftableItems.add(new Item(0,5));
+		craftableItems.add(new Item(1,4));
+		craftableItems.add(new Item(2, 2));
+		
+		craftingInterface = new Crafting(batch,craftableItems);
 	}
 	
 	public void update(float delta)
@@ -88,13 +94,18 @@ public class Gameplay {
 		processInputs();
 		player.update(delta);
 		
-		tempList.render();
 		
 		Vector2 temp = player.getPos();
 		camera.position.set(temp.x,temp.y,0);
 		camera.update();
 		
-
+		if(craftingOpen)
+		{
+			craftingInterface.render();
+			isPaused = true;
+		}
+		else if(!pauseOpen)
+			isPaused = false;
 		
 		if(inventoryOpen)
 		{
@@ -109,7 +120,7 @@ public class Gameplay {
 			pauseMenu.render(delta);
 			isPaused = true;
 		}
-		else if(!inventoryOpen)
+		else if(!inventoryOpen || !craftingOpen)
 			isPaused = false;
 		
 		batch.end();
@@ -127,7 +138,7 @@ public class Gameplay {
 	{
 		if(Gdx.input.isKeyJustPressed(Keys.E))
 		{
-			if(!pauseOpen)
+			if(!pauseOpen && !craftingOpen)
 			{
 			inventoryOpen = !inventoryOpen;
 			}
@@ -166,5 +177,9 @@ public class Gameplay {
 		
 	}
 	
+	public static void setCraftingOpen(boolean b)
+	{
+		craftingOpen = b;
+	}
 	
 }
