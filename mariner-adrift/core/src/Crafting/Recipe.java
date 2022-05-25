@@ -8,12 +8,10 @@ public class Recipe {
 	private boolean locked;
 	private ArrayList<Item> ingredients;
 	private ArrayList<Item> results;
-	private Tile station;
-	public Recipe(boolean locked, ArrayList<Item> ingredients, ArrayList<Item> results, Tile station) {
+	public Recipe(boolean locked, ArrayList<Item> ingredients, ArrayList<Item> results) {
 		this.locked = locked;
 		this.ingredients = ingredients;
 		this.results = results;
-		this.station = station;
 	}
 	public boolean locked() {
 		return locked;

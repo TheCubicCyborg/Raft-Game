@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import Crafting.Recipe;
+import Crafting.RecipeManager;
 import Inventory.Item;
 
 public class Crafting {
@@ -49,8 +50,10 @@ public class Crafting {
 		craftButton.render();
 	}
 	
-	public boolean craft(Recipe recipe)
+	public boolean craft(Item i)
 	{
+		if (craftButton.isJustPressed())
+			RecipeManager.craft(i.getId());
 		return true;
 	}
 	
