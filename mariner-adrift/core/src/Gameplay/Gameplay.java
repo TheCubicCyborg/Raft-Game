@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.csds.marineradrift.MarinerInputProcessor;
 
+import Crafting.RecipeManager;
 import Entities.Raft;
 import Interfaces.Button;
 import Interfaces.Crafting;
@@ -57,12 +58,14 @@ public class Gameplay {
 		world = new World(batch);
 		ItemPropertiesManager ItemProp = new ItemPropertiesManager();
 		
+		
 		inventory = new Inventory(batch);
 		pauseMenu = new PauseMenu(batch);
 		inventoryOpen = false;
 		craftingOpen = false;
 		pauseOpen = false;
 		
+		RecipeManager RecipeMan = new RecipeManager(inventory);
 
 		raft = new Raft(world.getFocused(), 0,0, 3 * Chunk.tileSize, 3 * Chunk.tileSize, batch);
 		
@@ -71,11 +74,14 @@ public class Gameplay {
 		sprite = new Sprite(new Texture("badlogic.jpg"));
 		
 		craftableItems = new ArrayList<Item>();
-		craftableItems.add(new Item(0,5));
-		craftableItems.add(new Item(0,5));
-		craftableItems.add(new Item(0,5));
-		craftableItems.add(new Item(1,4));
-		craftableItems.add(new Item(2, 2));
+		craftableItems.add(new Item(4, 1));
+		craftableItems.add(new Item(5, 1));
+		craftableItems.add(new Item(24, 1));
+		craftableItems.add(new Item(25, 1));
+		craftableItems.add(new Item(26, 1));
+		craftableItems.add(new Item(27, 1));
+		craftableItems.add(new Item(28, 1));
+		craftableItems.add(new Item(29, 1));
 		
 		craftingInterface = new Crafting(batch,craftableItems);
 	}

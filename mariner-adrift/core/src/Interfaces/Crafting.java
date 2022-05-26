@@ -43,7 +43,9 @@ public class Crafting {
 		x = (int) (Gameplay.Gameplay.camera.position.x + screenPos.x);
 		y = (int) (Gameplay.Gameplay.camera.position.y + screenPos.y);
 		
-		
+		if (craftButton.isJustPressed()) {
+			craft(itemList.getSelected());
+		}
 		
 		batch.draw(background,x,y,background.getWidth()*scale,background.getHeight()*scale);
 		itemList.render();
@@ -52,8 +54,7 @@ public class Crafting {
 	
 	public boolean craft(Item i)
 	{
-		if (craftButton.isJustPressed())
-			RecipeManager.craft(i.getId());
+		RecipeManager.craft(i.getId());
 		return true;
 	}
 	
