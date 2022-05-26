@@ -17,7 +17,7 @@ public class World {
 	public static final int SOUTH = 3;
 	public static final int WEST = 4;
 	
-	private int renderDistance = 2;
+	public static int renderDistance = 2;
 	
 	private Map<Vector2, Chunk> rendered;
 	
@@ -55,6 +55,10 @@ public class World {
 		return focused;
 	}
 	
+	public Map<Vector2, Chunk> getRendered()
+	{
+		return rendered;
+	}
 	
 	private void initiateWorld()
 	{

@@ -11,6 +11,8 @@ import WorldMap.World;
 
 public class Entity {
 	
+	protected static Vector2 flow = new Vector2(0.5f,0.5f);
+	
 	protected Chunk currentChunk;
 	protected Vector2 pos;
 	protected SpriteBatch batch;
@@ -48,7 +50,7 @@ public class Entity {
 	
 	public void dispose() 
 	{
-		
+		currentChunk.removeEntity(this);
 	}
 	
 	public Rectangle hitBox()

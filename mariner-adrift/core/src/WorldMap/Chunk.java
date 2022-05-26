@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+
+import Entities.DroppedItem;
 import Entities.Entity;
+import Entities.Fish;
 import Gameplay.Player;
 
 public class Chunk {
@@ -79,7 +82,15 @@ public class Chunk {
 		for(Entity e : entities)
 		{
 			if(!(e instanceof Player))
-				e.update(delta);
+			{
+				if(e instanceof DroppedItem)
+					((DroppedItem)e).update(delta);
+				else if(e instanceof Fish)
+					((Fish)e).update(delta);
+				else
+					e.update(delta);
+			}
+				
 		}
 	}
 	

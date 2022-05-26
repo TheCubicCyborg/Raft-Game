@@ -13,6 +13,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.csds.marineradrift.MarinerInputProcessor;
 
 import Crafting.RecipeManager;
+
+import Entities.DroppedItem;
+import Entities.Fish;
 import Entities.Raft;
 import Interfaces.Button;
 import Interfaces.Crafting;
@@ -45,6 +48,7 @@ public class Gameplay {
 	
 	ArrayList<Item> craftableItems;
 	private Crafting craftingInterface;
+	
 	
 	public Gameplay()
 	{
@@ -89,6 +93,8 @@ public class Gameplay {
 	public void update(float delta)
 	{
 		batch.setProjectionMatrix(camera.combined);
+		
+		attemptSpawn();
 		
 		batch.begin();
 		
@@ -181,6 +187,31 @@ public class Gameplay {
 			raft.moveRaft(new Vector2(0, -5));
 		}
 		
+	}
+	
+	public void attemptSpawn()
+	{
+		if((int)(Math.random()*600) == 0)
+		{
+			
+			int temp = (int)(Math.random()*4);
+			System.out.println("true");
+			Chunk c = world.getRendered().getElement(new Vector2(-World.renderDistance,-World.renderDistance));
+			System.out.println(temp);
+			if(temp != 3)
+			{
+				System.out.println("item");
+				new DroppedItem(c,c.getCoords().x*Chunk.totalSize,c.getCoords().y*Chunk.totalSize,
+						Chunk.tileSize,Chunk.tileSize, batch, new Item(temp,1), false);
+			}
+			else
+			{
+				System.out.println("fish");
+				new Fish(c,c.getCoords().x*Chunk.totalSize,c.getCoords().y*Chunk.totalSize,
+						Chunk.tileSize,Chunk.tileSize, batch);
+			}
+			
+		}
 	}
 	
 	public static void setCraftingOpen(boolean b)
