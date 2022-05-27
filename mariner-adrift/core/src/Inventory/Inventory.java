@@ -76,6 +76,10 @@ public class Inventory {
 			inventory[2][4] = new Item(1,15);
 			inventory[2][5] = new Item(0,20);
 		}
+		if(Gdx.input.isKeyJustPressed(Keys.L)) {
+			System.out.println(getFirstStack(new Item(1, 15)));
+			remove(new Item(1, 15));
+		}
 	}
 	
 	public void dispose()
