@@ -79,7 +79,7 @@ public class Chunk {
 	
 	public void renderEntities(float delta)
 	{
-		for(Entity e : entities)
+		for(Entity e : (ArrayList<Entity>)entities.clone())
 		{
 			if(!(e instanceof Player))
 			{

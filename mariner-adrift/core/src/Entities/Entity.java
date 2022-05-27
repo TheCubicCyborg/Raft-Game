@@ -18,6 +18,8 @@ public class Entity {
 	protected SpriteBatch batch;
 	protected Rectangle hitBox;
 	
+	private int pauseDirection; 
+	
 	public Entity(Chunk c, float x, float y, float w, float h, SpriteBatch b)
 	{
 		currentChunk = c;
@@ -26,6 +28,8 @@ public class Entity {
 		pos = new Vector2(x,y);
 		hitBox = new Rectangle(x,y,w,h);
 		batch = b;
+		//in case an entity is trying to move into an unloaded chunk, it will just pause where it last was
+		pauseDirection = 4;
 	}
 	
 	public ArrayList<Entity> overlaps()
@@ -45,7 +49,34 @@ public class Entity {
 	
 	public void update(float delta)
 	{
-		hitBox.setPosition(pos);
+		if(pauseDirection == 4)
+		{
+			hitBox.setPosition(pos);
+			chunkMovementCheck();
+		}
+		else
+		{
+			switch(pauseDirection)
+			{
+			case 0:
+				if(currentChunk.north() != null)
+					pauseDirection = 4;
+				break;
+			case 1: 
+				if(currentChunk.east() != null)
+					pauseDirection = 4;
+				break;
+			case 2:
+				if(currentChunk.south() != null)
+					pauseDirection = 4;
+				break;
+			case 3:
+				if(currentChunk.west() != null)
+					pauseDirection = 4;
+				break;
+			}
+		}
+		
 	}
 	
 	public void dispose() 
@@ -68,28 +99,51 @@ public class Entity {
 		
 		if(pos.x >= (currentChunk.getCoords().x +1) * Chunk.totalSize)
 		{
-			currentChunk.removeEntity(this);
-			currentChunk.east().addEntity(this);
-			currentChunk = currentChunk.east();
+			
+			if(currentChunk.east() != null)
+			{
+				currentChunk.removeEntity(this);
+				currentChunk.east().addEntity(this);
+				currentChunk = currentChunk.east();
+			}
+			else
+			{
+				pauseDirection = 1;
+			}
 		}
 		else if(pos.x < (currentChunk.getCoords().x) * Chunk.totalSize)
 		{
-			currentChunk.removeEntity(this);
-			currentChunk.west().addEntity(this);
-			currentChunk = currentChunk.west();
+			if(currentChunk.west() != null)
+			{
+				currentChunk.removeEntity(this);
+				currentChunk.west().addEntity(this);
+				currentChunk = currentChunk.west();
+			}
+			else
+				pauseDirection = 3;
 		}
 		
 		if(pos.y >= (currentChunk.getCoords().y +1) * Chunk.totalSize)
 		{
-			currentChunk.removeEntity(this);
-			currentChunk.north().addEntity(this);
-			currentChunk = currentChunk.north();
+			if(currentChunk.north() != null)
+			{
+				currentChunk.removeEntity(this);
+				currentChunk.north().addEntity(this);
+				currentChunk = currentChunk.north();
+			}
+			else
+				pauseDirection = 0;
 		}
 		else if(pos.y < (currentChunk.getCoords().y) * Chunk.totalSize)
 		{
-			currentChunk.removeEntity(this);
-			currentChunk.south().addEntity(this);
-			currentChunk = currentChunk.south();
+			if(currentChunk.south() != null)
+			{
+				currentChunk.removeEntity(this);
+				currentChunk.south().addEntity(this);
+				currentChunk = currentChunk.south();
+			}
+			else
+				pauseDirection = 2;
 		}
 		
 

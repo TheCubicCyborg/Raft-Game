@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import Entities.DroppedItem;
 import Entities.Entity;
+import Entities.Fish;
 import Entities.Raft;
 import Inventory.Inventory;
 import Inventory.Item;
@@ -283,13 +284,15 @@ public class Player extends Entity {
 		
 		if(Gdx.input.isKeyJustPressed(Keys.O))
 		{
-//			new DroppedItem(currentChunk,currentChunk.getCoords().x * Chunk.totalSize, currentChunk.getCoords().y * Chunk.totalSize, 20,20, batch, new Item(1, 5));
+		new DroppedItem(currentChunk,currentChunk.getCoords().x * Chunk.totalSize, currentChunk.getCoords().y * Chunk.totalSize, Chunk.tileSize,Chunk.tileSize, batch, new Item(1, 5), false);
 
-			currentChunk.setTile(1, 0, 7, 7);
-			currentChunk.setTile(1, 0, 7, 8);
-			currentChunk.setTile(1, 0, 8, 7);
-			currentChunk.setTile(1, 1, 8, 8);
-			currentChunk.setTile(1, 0, 8, 9);
+//			new Fish(currentChunk,currentChunk.getCoords().x*Chunk.totalSize,currentChunk.getCoords().y*Chunk.totalSize,
+//					Chunk.tileSize,Chunk.tileSize, batch);
+//			currentChunk.setTile(1, 0, 7, 7);
+//			currentChunk.setTile(1, 0, 7, 8);
+//			currentChunk.setTile(1, 0, 8, 7);
+//			currentChunk.setTile(1, 1, 8, 8);
+//			currentChunk.setTile(1, 0, 8, 9);
 		}
 		
 	}

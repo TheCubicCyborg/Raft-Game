@@ -21,8 +21,9 @@ public class DroppedItem extends Entity{
 		super(c, x, y, w, h, b);
 		item = i;
 		playerDropped = pd;
-		sprite = new Sprite(ItemPropertiesManager.textures[i.getTextureY()][i.getTextureX()], (int)x, (int)y, w, h);
-
+		sprite = new Sprite(ItemPropertiesManager.textures[i.getTextureY()][i.getTextureX()]);
+		sprite.setPosition(x, y);
+		sprite.setSize(w,h);
 	}
 	
 	public void update(float delta)
@@ -34,8 +35,9 @@ public class DroppedItem extends Entity{
 				dispose();
 			
 			pos.add(flow);
+	
 		}
-			
+		sprite.setPosition(pos.x,pos.y);
 		
 		super.update(delta);
 		render(delta);
@@ -43,6 +45,7 @@ public class DroppedItem extends Entity{
 	
 	public void render(float delta)
 	{
+		
 		sprite.draw(batch);
 	}
 	

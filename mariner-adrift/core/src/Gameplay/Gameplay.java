@@ -190,22 +190,28 @@ public class Gameplay {
 	
 	public void attemptSpawn()
 	{
-		if((int)(Math.random()*600) == 0)
+		if((int)(Math.random()*150) == 0)
 		{
+			int numChunks = (world.renderDistance * 2 + 1) *2 -1;
+			int temp = (int)(Math.random()*numChunks);
+			Chunk c;
+			if(temp <= numChunks/2)
+			{
+				c = world.getRendered().getElement(new Vector2(-World.renderDistance,World.renderDistance - temp));
+			}
+			else
+			{
+				c = world.getRendered().getElement(new Vector2(temp-(numChunks/2) - World.renderDistance, -World.renderDistance));
+			}
 			
-			int temp = (int)(Math.random()*4);
-			System.out.println("true");
-			Chunk c = world.getRendered().getElement(new Vector2(-World.renderDistance,-World.renderDistance));
-			System.out.println(temp);
+			temp = (int)(Math.random()*4);
 			if(temp != 3)
 			{
-				System.out.println("item");
 				new DroppedItem(c,c.getCoords().x*Chunk.totalSize,c.getCoords().y*Chunk.totalSize,
 						Chunk.tileSize,Chunk.tileSize, batch, new Item(temp,1), false);
 			}
 			else
 			{
-				System.out.println("fish");
 				new Fish(c,c.getCoords().x*Chunk.totalSize,c.getCoords().y*Chunk.totalSize,
 						Chunk.tileSize,Chunk.tileSize, batch);
 			}
