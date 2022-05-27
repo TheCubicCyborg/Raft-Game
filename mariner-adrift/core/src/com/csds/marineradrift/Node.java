@@ -37,6 +37,8 @@ public class Node<E> {
 		return children;
 	}
 	public int numChildren() {
+		if(children == null)
+			return 0;
 		return children.size();
 	}
 	public Node parent() {

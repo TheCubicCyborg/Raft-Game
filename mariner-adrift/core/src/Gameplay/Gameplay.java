@@ -25,6 +25,7 @@ import Inventory.Inventory;
 import Inventory.Item;
 import Inventory.ItemPropertiesManager;
 import Screens.GameScreen;
+import Skills.SkillManager;
 import WorldMap.Chunk;
 import WorldMap.TilePropertiesManager;
 import WorldMap.World;
@@ -72,6 +73,7 @@ public class Gameplay {
 		skillsOpen = false;
 		
 		RecipeManager RecipeMan = new RecipeManager(inventory);
+		SkillManager SkillIssue = new SkillManager(inventory);
 
 		raft = new Raft(world.getFocused(), 0,0, 3 * Chunk.tileSize, 3 * Chunk.tileSize, batch);
 		

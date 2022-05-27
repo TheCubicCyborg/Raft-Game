@@ -1,4 +1,7 @@
 package com.csds.marineradrift;
+
+import java.util.ArrayList;
+
 public class Tree<E> {
 	private Node root;
 	public Tree() {
@@ -6,7 +9,7 @@ public class Tree<E> {
 	}
 	public void add(E element) {
 		if(root == null)
-			root = new Node(element, null, null);
+			root = new Node(element, null, new ArrayList<Node<E>>());
 		else
 			root.addChild(element);
 	}
