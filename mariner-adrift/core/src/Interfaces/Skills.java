@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import Inventory.Inventory;
 import Inventory.Item;
+import Skills.Skill;
 import Skills.SkillTree;
 
 public class Skills {
@@ -15,7 +16,8 @@ public class Skills {
 	private SpriteBatch batch;
 	private static SkillTree st;
 	private Texture background;
-	
+	private Button unlockButton;
+	private Skill selected;
 	private Vector2 screenPos;
 	int x,y;
 	
