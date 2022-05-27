@@ -78,13 +78,18 @@ public class Skill {
 	
 	public boolean unlock()
 	{
-		if(parent.unlocked)
+		if(parent == null || parent.unlocked)
 		{
 			unlocked = true;
 			return true;
 		}	
 		else
 			return false;
+	}
+	
+	public boolean isUnlocked()
+	{
+		return unlocked;
 	}
 	public boolean equals(Skill o) {
 		return name.equals(o.name);

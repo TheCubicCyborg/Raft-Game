@@ -23,19 +23,24 @@ public class MainMenu extends MarinerScreen{
 	public void show()
 	{
 		batch = new SpriteBatch();
-		img = new Texture("player.png");
+		img = new Texture("TitleScreen.png");
 	}
 	
 	@Override
 	public void render(float delta) {
 		ScreenUtils.clear(49f, 120f, 193f, 1f);
 		batch.begin();
-		batch.draw(img, 0, 0, 1080,1080 );
+		batch.draw(img, 0, -50, 1920, 1080 );
 		batch.end();
 		
 		if(Gdx.input.isKeyPressed(Keys.SPACE))
 		{
 			game.setScreen(new GameScreen(game));
+		}
+		
+		if(Gdx.input.isKeyPressed(Keys.BACKSPACE))
+		{
+			Gdx.app.exit();
 		}
 	}
 	
