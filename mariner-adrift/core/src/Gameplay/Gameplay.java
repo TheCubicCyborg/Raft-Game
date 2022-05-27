@@ -19,6 +19,7 @@ import Entities.Raft;
 import Interfaces.Button;
 import Interfaces.Crafting;
 import Interfaces.ScrollList;
+import Interfaces.Skills;
 import Interfaces.Text;
 import Inventory.Inventory;
 import Inventory.Item;
@@ -36,7 +37,7 @@ public class Gameplay {
 	private Inventory inventory;
 	private PauseMenu pauseMenu;
 	public static boolean pauseOpen;
-	private static boolean inventoryOpen, craftingOpen;
+	private static boolean inventoryOpen, craftingOpen, skillsOpen;
 	
 	SpriteBatch batch;
 	public static OrthographicCamera camera;
@@ -47,6 +48,7 @@ public class Gameplay {
 	
 	ArrayList<Item> craftableItems;
 	private Crafting craftingInterface;
+	private Skills skillInterface;
 	
 	
 	public Gameplay()
@@ -67,6 +69,7 @@ public class Gameplay {
 		inventoryOpen = false;
 		craftingOpen = false;
 		pauseOpen = false;
+		skillsOpen = false;
 		
 		RecipeManager RecipeMan = new RecipeManager(inventory);
 
@@ -87,6 +90,7 @@ public class Gameplay {
 		craftableItems.add(new Item(29, 1));
 		
 		craftingInterface = new Crafting(batch,craftableItems);
+		skillInterface = new Skills(inventory,batch);
 	}
 	
 	public void update(float delta)
@@ -126,6 +130,15 @@ public class Gameplay {
 		else if(!pauseOpen)
 			isPaused = false;
 		
+		if(skillsOpen)
+		{
+			skillInterface.render();
+			isPaused = true;
+		}
+		else if(!pauseOpen)
+			isPaused = false;
+		
+		
 		if(pauseOpen)
 		{
 			pauseMenu.render(delta);
@@ -149,7 +162,7 @@ public class Gameplay {
 	{
 		if(Gdx.input.isKeyJustPressed(Keys.E))
 		{
-			if(!pauseOpen && !craftingOpen)
+			if(!pauseOpen && !craftingOpen && !skillsOpen)
 			{
 			inventoryOpen = !inventoryOpen;
 			}
@@ -157,6 +170,14 @@ public class Gameplay {
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 		{
 			pauseOpen = !pauseOpen;
+		}
+		
+		if(Gdx.input.isKeyJustPressed(Keys.I))
+		{
+			if(!pauseOpen && !craftingOpen && !inventoryOpen)
+			{
+				skillsOpen = !skillsOpen;
+			}
 		}
 		
 		
